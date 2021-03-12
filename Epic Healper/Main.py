@@ -7,7 +7,7 @@ from EmbedsEpicHealper import EpicHealperEmbeds
 from discord.ext import commands
 from discord.ext.commands import bot
 
-client = commands.Bot(intents = discord.Intents.all(), command_prefix=['help ','h '])
+client = commands.Bot(intents = discord.Intents.all(), command_prefix= 't ')
 
 EmbedsObj = None
 
@@ -23,6 +23,12 @@ async def on_ready(): #Bot start
     EmbedsObj = EmbedsEpicHealper.EpicHealperEmbeds(client)
 
     await client.change_presence(activity=discord.Game("\"help h\" alias \"h h\"")) #Alterar status do bot
+
+@client.command(aliases=["fc"])
+async def flipcoin(ctx):
+    choice = random.choice(["🙂","👑"])
+    message = await ctx.channel.fetch_message(ctx.message.id)
+    await message.add_reaction(choice)
 
 @client.command()
 async def roles(ctx): #Comando para cargos
