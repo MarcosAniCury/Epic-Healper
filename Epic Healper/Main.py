@@ -120,39 +120,55 @@ async def ping(ctx): #Comando para testar a latencia
 
 #Arena Commands
 
+EmbedAnterior = None
+
 @client.event
 async def on_message(message):
     #Variaveis importantes
     global ArenaList
+    global EmbedAnterior
     guild = message.guild
     member = guild.get_member(message.author.id)
 
     if message.content.lower().startswith("a start"): #Iniciar a lista
-        if ArenaList == 0 or ArenaList == None:
+        if ArenaList == None: #Verifica se a lista está Vazia
             ArenaList = [member]
             embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
-            await message.channel.send(embed=embed_A_List)
-            for x in ArenaList:
-                await message.channel.send(x)
+            EmbedAnterior =  await message.channel.send(embed=embed_A_List)
         else:
-            await message.channel.send("Arena já em andamento digite \"a join\" para entrar")
+            await message.channel.send("Arena já em andamento digite \"a join\" para entrar", delete_after=10)
+        await message.delete()
 
-    if message.content.lower().startswith("a list"): #Verificar a lista
-        if ArenaList == None:
-            await message.channel.send("Arena Vazia, para criar uma digite \"a start\"") #comando para verificar ArenaList
+    elif message.content.lower().startswith("a list"): #Verificar a lista
+        if ArenaList == None: #Verifica se a lista está vazia
+            await message.channel.send("Arena Vazia, para criar uma digite \"a start\"", delete_after=10) #comando para verificar ArenaList
         else:
             embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
             await message.channel.send(embed=embed_A_List)   
+        await message.delete()
 
-    if message.content.lower().startswith("a join"): #Entrar na lista
-        if ArenaList != None and len(ArenaList) < 10:
+    elif message.content.lower().startswith("a join"): #Entrar na lista
+        if ArenaList != None and len(ArenaList) < 10: #Verifica se ela está vazia ou cheia
             ArenaList.append(member)
             embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
-            await message.channel.send(embed=embed_A_List) 
+            await message.channel.delete_messages([EmbedAnterior])
+            EmbedAnterior = await message.channel.send(embed=embed_A_List)
         else:
-            await message.channel.send("Arena Vazia, para criar uma digite \"a start\"")
-            
-    await client.process_commands(message)
+            await message.channel.send("Arena Vazia, para criar uma digite \"a start\"", delete_after=10)
+        await message.delete()
 
+    elif message.content.lower().startswith("a reset"): #Resetar a lista
+        roles_names = [x.name for x in member.roles]
+        if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
+            if ArenaList == None: #Verifica se está vazia
+                await message.channel.send("Arena Vazia, para criar uma digite \"a start\"", delete_after=10)
+            else:
+                ArenaList = None
+                await message.channel.send("Arena Resetada", delete_after=10)
+        else:
+            await message.channel.send("Você não tem acesso a esse comando", delete_after=10)
+        await message.delete()
+
+    await client.process_commands(message)
 
 client.run(TOKEN.get_token())
