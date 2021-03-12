@@ -24,6 +24,22 @@ async def on_ready(): #Bot start
 
     await client.change_presence(activity=discord.Game("\"help h\" alias \"h h\"")) #Alterar status do bot
 
+
+class MyHelp(commands.HelpCommand): #Overwrite help
+    def __init__(self):
+        super().__init__(command_attrs={
+        'aliases': ['h'],
+        })
+
+    async def send_bot_help(self, mapping):
+        channel = self.get_destination()
+        HelpEmbed = EmbedsObj.get_HelpCommand()
+        await channel.send(embed=HelpEmbed)
+
+client.help_command = MyHelp() #Quando digitar <prefix> help vai chamar a funcao
+
+#-----------Comando de roles Inicio--------------
+
 @client.command()
 async def roles(ctx): #Comando para cargos
     HorseEmoji = client.get_emoji(770751818158047318) #emoji :HorseT8:
@@ -93,26 +109,13 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
         role = discord.utils.get(guild.roles, name='Updates')
         await member.remove_roles(role)
 
-#Overwrite help
-
-class MyHelp(commands.HelpCommand):
-    def __init__(self):
-        super().__init__(command_attrs={
-        'aliases': ['h'],
-        })
-
-    async def send_bot_help(self, mapping):
-        channel = self.get_destination()
-        HelpEmbed = EmbedsObj.get_HelpCommand()
-        await channel.send(embed=HelpEmbed)
-
-client.help_command = MyHelp() #Quando digitar <prefix> help vai chamar a funcao
+#------------Comando de roles Fim----------------
 
 @client.command()
 async def ping(ctx): #Comando para testar a latencia
     await ctx.send("Pong")
 
-#Arena Commands
+#--------------Arena Commands Inicio-------------------
 
 @client.event
 async def on_message(message):
@@ -148,5 +151,6 @@ async def on_message(message):
             
     await client.process_commands(message)
 
+#------------Arena Commands Fim-----------------
 
-client.run(TOKEN.get_token())
+client.run(TOKEN.get_token()) #Token do bot
