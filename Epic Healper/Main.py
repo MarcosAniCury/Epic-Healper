@@ -169,6 +169,20 @@ async def on_message(message):
             await message.channel.send("Você não tem acesso a esse comando", delete_after=10)
         await message.delete()
 
+    elif message.content.lower().startswith("a leave"): #Sair da lista
+        if ArenaList == None:
+            await message.channel.send("Arena Vazia, para criar uma digite \"a start\"", delete_after=10)
+        elif member in ArenaList:
+            ArenaList.remove(member)
+            embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
+            await message.channel.delete_messages([EmbedAnterior])
+            EmbedAnterior = await message.channel.send(embed=embed_A_List)
+            if len(ArenaList) <= 0:
+                    ArenaList = None
+            await message.channel.send("Você saiu da arena", delete_after=10)
+        else:
+            await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
+
     await client.process_commands(message)
 
 client.run(TOKEN.get_token())
