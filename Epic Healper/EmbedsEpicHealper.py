@@ -9,18 +9,31 @@ class EpicHealperEmbeds:
         self.client = client
         self.HorseEmoji = self.client.get_emoji(770751818158047318) #emoji :HorseT8:
 
-    #Gets Embeds
     def get_HelpCommand(self):#Embed Command help
 
         HelpCommand = discord.Embed(
-            title = "Epic Helper HELP",
-            description = "Bot feito para ajudar os jogadores do rpg epic\n\n"
-                        "Comandos\n"
-                        "help roles - _para adquirir um cargo_\n"
-                        "help ping - _para testar a latência_\n\nBot em construção, mais comandos serão adicionados no futuro",
-            colour = 0xBF00FF
+            title = "Comandos",
+            description = "Bot feito para ajudar os jogadores do rpg epic",
+            colour = 0xBF00FF,
         )
+
+        HelpCommand.add_field(
+            name="📄Server Comandos📄", 
+            value = "`help roles` - para adquirir um cargo\n"
+            "`help ping` - para testar a latência",
+            inline = False
+        )
+
+        HelpCommand.add_field(
+            name="🍪Arena Comandos🍪",
+            value = "`a start` - Iniciar a arena\n"
+            "`a join` - Entrar na arena\n"
+            "`a leave` - Sair da arena\n"
+            "\nBot em construção, mais comandos serão adicionados no futuro"
+        )
+
         HelpCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')
+        HelpCommand.set_author(name="EPIC HEALPER", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
         return HelpCommand
 
