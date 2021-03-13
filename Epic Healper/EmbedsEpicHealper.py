@@ -13,14 +13,15 @@ class EpicHealperEmbeds:
 
         HelpCommand = discord.Embed(
             title = "Comandos",
-            description = "Bot feito para ajudar os jogadores do rpg epic",
+            description = "Bot feito para ajudar os jogadores do rpg epic\n\u200b",
             colour = 0xBF00FF,
         )
 
         HelpCommand.add_field(
             name="📄Server Comandos📄", 
             value = "`help roles` - para adquirir um cargo\n"
-            "`help ping` - para testar a latência",
+            "`help ping` - para testar a latência\n"
+            "`help helpadm || hadm` - comando help para adms **Apenas ADMs**\n\u200b",
             inline = False
         )
 
@@ -36,6 +37,32 @@ class EpicHealperEmbeds:
         HelpCommand.set_author(name="EPIC HEALPER", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
         return HelpCommand
+
+    def get_HelpAdmCommand(self): #Emd Commnad helpadm
+        
+        HelpAdmCommand = discord.Embed(
+            title = "Comandos Adms",
+            description = "Bot feito para ajudar os jogadores do rpg epic\n\u200b",
+            colour = 0xBF00FF,
+        )
+
+        HelpAdmCommand.add_field(
+            name="📄Server Comandos📄", 
+            value = "Nada aqui ainda\n\u200b",
+            inline = False
+        )
+
+        HelpAdmCommand.add_field(
+            name="🍪Arena Comandos🍪",
+            value = "`a reset` - Reinicia a arena\n"
+            "`a list` - Mostra a lista da arena\n"
+            "\nBot em construção, mais comandos serão adicionados no futuro"
+        )
+
+        HelpAdmCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')
+        HelpAdmCommand.set_author(name="EPIC HEALPER", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
+
+        return HelpAdmCommand
 
     def get_RolesCommand(self): #Embed Commnad roles
 

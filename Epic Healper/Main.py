@@ -3,6 +3,7 @@ import EmbedsEpicHealper
 import TOKEN
 import discord
 import random
+import json
 from EmbedsEpicHealper import EpicHealperEmbeds
 from discord.ext import commands
 from discord.ext.commands import bot
@@ -37,6 +38,15 @@ class MyHelp(commands.HelpCommand): #Overwrite help
         await channel.send(embed=HelpEmbed)
 
 client.help_command = MyHelp() #Quando digitar <prefix> help vai chamar a funcao
+
+@client.command(aliases = ["hadm"])
+async def helpadm(ctx):
+    roles_names = [x.name for x in ctx.author.roles]
+    if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
+        HelpAdmEmbed = EmbedsObj.get_HelpAdmCommand()
+        await ctx.send(embed=HelpAdmEmbed)
+    else:
+        await ctx.send("Você não tem acesso a esse comando", delete_after=10)
 
 #-----------Comando de roles Inicio--------------
 
@@ -118,6 +128,22 @@ async def ping(ctx): #Comando para testar a latencia
 #--------------Arena Commands Inicio-------------------
 
 EmbedAnterior = None
+
+@client.command()
+async def set_arena(ctx, canal):
+    roles_names = [x.name for x in ctx.author.roles]
+    if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
+        channel_mentions = [x.mention for x in ctx.guild.channels]
+        if canal in channel_mentions:
+            f = open("pre_sets.json", "a+")
+            json.dump(5, f)
+            guild = ctx.guild
+            if Servidores != None or guild.id in Servidores:
+                Servidor = { 
+                    ctx.guild.id: {
+                        "name" : "teste"
+                    }
+                }
 
 @client.event
 async def on_message(message):
