@@ -140,11 +140,15 @@ async def on_message(message):
         await message.delete()
 
     elif message.content.lower().startswith("a list"): #Verificar a lista
-        if ArenaList == None: #Verifica se a lista está vazia
-            await message.channel.send("Arena Vazia, para criar uma digite \"a start\"", delete_after=10) #comando para verificar ArenaList
+        roles_names = [x.name for x in member.roles]
+        if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
+            if ArenaList == None: #Verifica se a lista está vazia
+                await message.channel.send("Arena Vazia, para criar uma digite \"a start\"", delete_after=10) #comando para verificar ArenaList
+            else:
+                embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
+                await message.channel.send(embed=embed_A_List) 
         else:
-            embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
-            await message.channel.send(embed=embed_A_List)   
+            await message.channel.send("Você não tem acesso a esse comando", delete_after=10)  
         await message.delete()
 
     elif message.content.lower().startswith("a join"): #Entrar na lista

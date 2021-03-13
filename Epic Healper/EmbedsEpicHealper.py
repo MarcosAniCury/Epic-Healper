@@ -30,7 +30,6 @@ class EpicHealperEmbeds:
             value = "`a start` - Iniciar a arena\n"
             "`a join` - Entrar na arena\n"
             "`a leave` - Sair da arena\n"
-            "`a list` - Listar membros\n"
             "\nBot em construção, mais comandos serão adicionados no futuro"
         )
 
