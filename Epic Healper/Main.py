@@ -7,7 +7,7 @@ from EmbedsEpicHealper import EpicHealperEmbeds
 from discord.ext import commands
 from discord.ext.commands import bot
 
-client = commands.Bot(intents = discord.Intents.all(), command_prefix=['help ','h '])
+client = commands.Bot(intents = discord.Intents.all(), command_prefix=TOKEN.get_prefix())
 
 EmbedsObj = None
 
