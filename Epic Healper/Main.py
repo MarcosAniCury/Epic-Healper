@@ -1,9 +1,12 @@
-from discord import embeds
+#Meus arquivos .py
 import EmbedsEpicHealper
 import TOKEN
+import JsonCommands
+#Bibliotecas python
 import discord
 import random
 import json
+from discord import embeds
 from EmbedsEpicHealper import EpicHealperEmbeds
 from discord.ext import commands
 from discord.ext.commands import bot
@@ -133,17 +136,9 @@ EmbedAnterior = None
 async def set_arena(ctx, canal):
     roles_names = [x.name for x in ctx.author.roles]
     if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
-        channel_mentions = [x.mention for x in ctx.guild.channels]
-        if canal in channel_mentions:
-            f = open("pre_sets.json", "a+")
-            json.dump(5, f)
-            guild = ctx.guild
-            if Servidores != None or guild.id in Servidores:
-                Servidor = { 
-                    ctx.guild.id: {
-                        "name" : "teste"
-                    }
-                }
+        channel_mentions = [x.mention for x in ctx.guild.channels] 
+        if canal in channel_mentions: #Verifica se o canal existe
+            
 
 @client.event
 async def on_message(message):
