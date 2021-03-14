@@ -138,7 +138,7 @@ async def set_arena(ctx, canal):
     if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
         channel_mentions = [x.mention for x in ctx.guild.channels] 
         if canal in channel_mentions: #Verifica se o canal existe
-            
+            pass
 
 @client.event
 async def on_message(message):
