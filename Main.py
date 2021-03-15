@@ -9,11 +9,12 @@ import random
 from discord import embeds
 from discord.ext import commands
 from discord.ext.commands import bot
+from pymongo import MongoClient
 
-client = commands.Bot(intents = discord.Intents.all(), command_prefix=TOKEN.get_prefix())
+client = commands.Bot(intents = discord.Intents.all(), command_prefix=TOKENs.get_prefix())
 
 EmbedsObj = None
-DB = None
+banco = None
 
 ArenaList = None #Variavel da arena
 
@@ -24,9 +25,9 @@ async def on_ready(): #Bot start
     print(client.user.id)
     print("----------------------")
     global EmbedsObj 
-    global DB
+    global banco
     EmbedsObj = EmbedsEpicHealper.EpicHealperEmbeds(client)
-    DB = CRUD.Crud()
+    banco = CRUD.Crud()
 
     await client.change_presence(activity=discord.Game("\"help h\" alias \"h h\"")) #Alterar status do bot
 
@@ -204,8 +205,14 @@ async def set_arena(ctx, canal):
     if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
         channel_mentions = [x.mention for x in ctx.guild.channels] 
         if canal in channel_mentions: #Verifica se o canal existe
-            CRUD.teste()
+            Arr = [("Server_id",ctx.guild.id),("Channel_Arena", canal),("Channel_Miniboss", "None"),("Channel_Not_Allower", "None")]
+            banco.ServidoresCheck(Arr,0)
+            await ctx.send("Arena setada para o canal "+canal, delete_after=10)
+        else:
+            await ctx.send("Esse canal não existe", delete_after=10)
+    else:
+        await ctx.send("Você não tem acesso a esse comando", delete_after=10)  
 
 #------------Arena Commands Fim-----------------
 
-client.run(TOKEN.get_token()) #Token do bot
+client.run(TOKENs.get_token()) #Token do bot
