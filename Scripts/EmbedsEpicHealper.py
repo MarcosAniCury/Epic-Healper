@@ -27,8 +27,7 @@ class EpicHealperEmbeds:
 
         HelpCommand.add_field(
             name="🍪Arena Comandos🍪",
-            value = "`a start` - Iniciar a arena\n"
-            "`a join` - Entrar na arena\n"
+            value = "`a join` - Entrar na arena\n"
             "`a leave` - Sair da arena\n"
             "\nBot em construção, mais comandos serão adicionados no futuro"
         )
