@@ -41,18 +41,14 @@ class Crud:
 
     #---------------Crud Fim------------------
 
-    def ServidoresCheck(self,Arr,op): #Checar para alterar um dos valores presentes na Coleção
+    def ServidoresCheck(self,Arr,key): #Checar para alterar um dos valores presentes na Coleção
         Server = dict(Arr)
         Obj = self.read_ServidoresById(Server["Server_id"]) 
         conseguiu = False
         if (Obj != None): #Existe logo irei fazer um update
-            if op == 0: #Alterar o Valor 0 após a Server_id
-                Obj["Channel_Arena"] = Server["Channel_Arena"]
-            elif op == 1: #Alterar o Valor 1 após a Server_id   
-                Obj["Channel_Miniboss"] = Server["Channel_Miniboss"]
-            elif op == 2: #Alterar o Valor 2 após a Server_id
-                Obj["Channel_Not_Allower"] = Server["Channel_Not_Allower"]
-            else: #Alterar tudo
+            if key != "None": #Verifica se altera um key expecifica
+                Obj[key] = Server[key]
+            else:    
                 Obj = Server
             self.update_Servidores(Obj)
             conseguiu = True

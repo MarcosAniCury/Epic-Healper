@@ -55,6 +55,8 @@ class EpicHealperEmbeds:
             name="🍪Arena Comandos🍪",
             value = "`a reset` - Reinicia a arena\n"
             "`a list` - Mostra a lista da arena\n"
+            "`help set_arena_commands <menção do canal>` - Setar canal em que comandos da arena serão executados\n"
+            "`help set_arena_execute <menção do canal>` - Setar canal em a arena será executada (Por padrão é o mesmo que a Arena_Commands)\n"
             "\nBot em construção, mais comandos serão adicionados no futuro"
         )
 
@@ -89,3 +91,20 @@ class EpicHealperEmbeds:
         ArenaCommand.set_footer(text="Epic Healper - bot em desenvolvimento", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
         return ArenaCommand
+
+    def get_ArenaExecute(self, ArenaList): #Embed Execute arena
+        
+        descrisao = "**Copie e cole as menções retirando a sua:**\nrpg miniboss"
+        for x in ArenaList:
+            descrisao += " `"+x.mention+"`\u200b"
+        descrisao += "\n\n**Os membros estão nessa ordem caso não saiba seu id:**\n"
+        for x in ArenaList:
+            descrisao += str(x)+", \u200b"
+            ArenaExecute = discord.Embed(
+                title="⚔️🍪 Arena 🍪⚔️",
+                description=descrisao,
+                color=0xFFBF00
+            )
+        ArenaExecute.set_footer(text="Epic Healper - bot em desenvolvimento", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
+
+        return ArenaExecute
