@@ -1,3 +1,7 @@
+#Meus arquivos .py
+from Scripts import TOKENs
+
+#Bibliotecas python
 import discord
 from discord import client
 from discord.ext.commands.help import HelpCommand
@@ -8,6 +12,9 @@ class EpicHealperEmbeds:
     def __init__(self, client):
         self.client = client
         self.HorseEmoji = self.client.get_emoji(770751818158047318) #emoji :HorseT8:
+        self.prefix = TOKENs.get_prefix()
+        if type(self.prefix) is list:
+            self.prefix = self.prefix[0]
 
     def get_HelpCommand(self):#Embed Command help
 
@@ -19,9 +26,9 @@ class EpicHealperEmbeds:
 
         HelpCommand.add_field(
             name="📄Server Comandos📄", 
-            value = "`help roles` - para adquirir um cargo\n"
-            "`help ping` - para testar a latência\n"
-            "`help helpadm || hadm` - comando help para adms **Apenas ADMs**\n\u200b",
+            value = "`"+self.prefix+"roles` - para adquirir um cargo\n"
+            "`"+self.prefix+"ping` - para testar a latência\n"
+            "`"+self.prefix+"helpadm || hadm` - comando help para adms **Apenas ADMs**\n\u200b",
             inline = False
         )
 
@@ -47,7 +54,7 @@ class EpicHealperEmbeds:
 
         HelpAdmCommand.add_field(
             name="📄Server Comandos📄", 
-            value = "Nada aqui ainda\n\u200b",
+            value = "`"+self.prefix+"set_adm <cargo ou cargos>` - Setar cargos como adms, para adicionar mais de um coloque juntos e separados por uma virgula\n\u200b",
             inline = False
         )
 
@@ -55,8 +62,8 @@ class EpicHealperEmbeds:
             name="🍪Arena Comandos🍪",
             value = "`a reset` - Reinicia a arena\n"
             "`a list` - Mostra a lista da arena\n"
-            "`help set_arena_commands <menção do canal>` - Setar canal em que comandos da arena serão executados\n"
-            "`help set_arena_execute <menção do canal>` - Setar canal em a arena será executada (Por padrão é o mesmo que a Arena_Commands)\n"
+            "`"+self.prefix+"set_arena_commands <menção do canal>` - Setar canal em que comandos da arena serão executados\n"
+            "`"+self.prefix+"set_arena_execute <menção do canal>` - Setar canal em a arena será executada (Por padrão é o mesmo que a Arena_Commands)\n"
             "\nBot em construção, mais comandos serão adicionados no futuro"
         )
 
@@ -99,7 +106,7 @@ class EpicHealperEmbeds:
             descrisao += " `"+x.mention+"`\u200b"
         descrisao += "\n\n**Os membros estão nessa ordem caso não saiba seu id:**\n"
         for x in ArenaList:
-            descrisao += str(x)+", \u200b"
+            descrisao += str(x)+", "
             ArenaExecute = discord.Embed(
                 title="⚔️🍪 Arena 🍪⚔️",
                 description=descrisao,

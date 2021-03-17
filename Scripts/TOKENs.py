@@ -5,4 +5,4 @@ def get_tokenCrud():
     return "mongodb+srv://Miko:meufusca@epichealpertester.tk1nm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 def get_prefix():
-    return "t "
+    return ["t ","T "]

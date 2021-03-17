@@ -18,8 +18,12 @@ banco = None
 
 ArenaList = None #Variavel da arena
 
+#Arr = [("Server_id",ctx.guild.id),("Channel_Arena_Commands", "None"),("Channel_Arena_Execute", canal),("Channel_Miniboss", "None"),("Channel_Not_Allower", "None")] #Dict in array form
+
+#----------Bot Status Inicio------------
+
 @client.event
-async def on_ready(): #Bot start
+async def on_ready():
     print("BOT ONLINE - Digite help h para ajuda") 
     print(client.user.name)
     print(client.user.id)
@@ -31,7 +35,36 @@ async def on_ready(): #Bot start
 
     await client.change_presence(activity=discord.Game("\"help h\" alias \"h h\"")) #Alterar status do bot
 
-#-------------Comandos Help-----------
+@client.event
+async def on_disconnect():
+    print("Bot desconectado verifique sua conexão")
+
+@client.event
+async def on_resumed():
+    print("BOT ONLINE - Digite help h para ajuda") 
+    print(client.user.name)
+    print(client.user.id)
+    print("----------------------")
+    global EmbedsObj 
+    global banco
+    EmbedsObj = EmbedsEpicHealper.EpicHealperEmbeds(client)
+    banco = CRUD.Crud()
+
+    await client.change_presence(activity=discord.Game("\"help h\" alias \"h h\"")) #Alterar status do bot
+
+@client.event
+async def on_guild_join(guild):
+    Ex = tuple(banco.read_ServidoresById(711375776351649875).items())
+    Arr = {"Server_id":"None"}
+    for x in Ex:
+        if x[0] != "_id": 
+            Arr[x[0]] = "None"
+    Arr["Server_id"] = guild.id
+    banco.ServidoresCheck(Arr,"Server_id")
+
+#----------Bot Status Fim------------
+
+#-------------Comandos Help Inicio-----------
 
 class MyHelp(commands.HelpCommand): #Overwrite help
     def __init__(self):
@@ -48,13 +81,45 @@ client.help_command = MyHelp() #Quando digitar <prefix> help vai chamar a funcao
 
 @client.command(aliases = ["hadm"])
 async def helpadm(ctx):
-    roles_names = [x.name for x in ctx.author.roles]
-    if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
+    if compareAdms_withRoles(ctx.guild, ctx.author.roles): #Verifica se o user possui permissão
         HelpAdmEmbed = EmbedsObj.get_HelpAdmCommand()
         await ctx.send(embed=HelpAdmEmbed)
     else:
         await ctx.send("Você não tem acesso a esse comando", delete_after=10)
-#--------------
+
+#-------------Comandos Help Fim-----------
+
+#------------Comandos Importantes Inicio-----------
+
+@client.command()
+async def ping(ctx): #Comando para testar a latencia
+    await ctx.send("Pong")
+
+@client.command()
+async def set_adm(ctx, role): #Adiciona um cargo como adm
+    guild = ctx.guild
+    if(ctx.author.id == guild.owner.id):
+        role = role.split(",")
+        role_mentions = [x.mention for x in ctx.guild.roles] 
+        if set(role).intersection(role_mentions): #Verifica se o cargo existe
+            Obj = banco.read_ServidoresById(guild.id)
+            retorno = None
+            if len(role) > 1:
+                retorno = "Os seguintes cargos foram adicionados como adms:"
+                for x in role:
+                    retorno += " \u200b"+x
+                Obj["Roles_Adms"] = role
+            else:
+                retorno = "O seguinte cargo foi adicionado como adms: "+role[0]
+                Obj["Roles_Adms"] = role[0]
+            banco.ServidoresCheck(Obj,"Roles_Adms")
+            await ctx.send(retorno)
+        else:
+            await ctx.send("Esse cargo não existe", delete_after=10)
+    else:
+        await ctx.send("Apenas o dono do server tem acesso a essa permissão", delete_after=10)
+
+#------------Comandos Importantes Fim-----------
 
 #-----------Comando de roles Inicio--------------
 
@@ -129,9 +194,6 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
 
 #------------Comando de roles Fim----------------
 
-@client.command()
-async def ping(ctx): #Comando para testar a latencia
-    await ctx.send("Pong")
 
 #--------------Arena Commands Inicio-------------------
 
@@ -146,7 +208,7 @@ async def on_message(message):
     member = guild.get_member(message.author.id)
 
     channel = banco.read_ServidoresById(guild.id)
-    if channel != None and channel["Channel_Arena_Commands"] == message.channel.mention: #Verificar se os comandos estão habilitados nesse chat
+    if channel["Channel_Arena_Commands"] == message.channel.mention: #Verificar se os comandos estão habilitados nesse chat
         if message.content.lower().startswith("a join"): #Entrar na lista
             if ArenaList != None and len(ArenaList) < 10: #Verifica se ela está vazia ou cheia
                 ArenaList.append(member)
@@ -178,8 +240,7 @@ async def on_message(message):
                 await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
 
         elif message.content.lower().startswith("a reset"): #Resetar a lista
-            roles_names = [x.name for x in member.roles]
-            if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
+            if compareAdms_withRoles(guild,member.roles): #Verifica se o user possui permissão
                 if ArenaList == None: #Verifica se está vazia
                     await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10)
                 else:
@@ -191,8 +252,7 @@ async def on_message(message):
             await message.delete()
 
         elif message.content.lower().startswith("a list"): #Verificar a lista
-            roles_names = [x.name for x in member.roles]
-            if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
+            if compareAdms_withRoles(guild,member.roles): #Verifica se o user possui permissão
                 if ArenaList == None: #Verifica se a lista está vazia
                     await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10) #comando para verificar ArenaList
                 else:
@@ -212,14 +272,14 @@ def enviarArena(guild): #Funcao para enviar a arena para outro chat
             retorno = x
 
     return retorno
+
 @client.command()
 async def set_arena_commands(ctx, canal):
-    roles_names = [x.name for x in ctx.author.roles]
-    if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
-        channel_mentions = [x.mention for x in ctx.guild.channels] 
-        if canal in channel_mentions: #Verifica se o canal existe
-            Arr = [("Server_id",ctx.guild.id),("Channel_Arena_Commands", canal),("Channel_Arena_Execute", canal),("Channel_Miniboss", "None"),("Channel_Not_Allower", "None")] #Dict in array form
-            banco.ServidoresCheck(Arr,"Channel_Arena_Commands") #Armazenamento
+    if compareAdms_withRoles(ctx.guild,ctx.author.roles): #Verifica se o user possui permissão
+        if channel_Exist(ctx.guild, canal): #Verifica se o canal existe
+            Obj = banco.read_ServidoresById(ctx.guild.id)
+            Obj["Channel_Arena_Commands"] = canal
+            banco.ServidoresCheck(Obj,"Channel_Arena_Commands") #Armazenamento
             await ctx.send("Comandos da arena setada para o canal "+canal, delete_after=10)
         else:
             await ctx.send("Esse canal não existe", delete_after=10)
@@ -228,12 +288,11 @@ async def set_arena_commands(ctx, canal):
 
 @client.command()
 async def set_arena_execute(ctx , canal):
-    roles_names = [x.name for x in ctx.author.roles]
-    if 'Sistema' in roles_names or 'Sub-Sistema' in roles_names : #Verifica se o user possui permissão
-        channel_mentions = [x.mention for x in ctx.guild.channels] 
-        if canal in channel_mentions: #Verifica se o canal existe
-            Arr = [("Server_id",ctx.guild.id),("Channel_Arena_Commands", "None"),("Channel_Arena_Execute", canal),("Channel_Miniboss", "None"),("Channel_Not_Allower", "None")] #Dict in array form
-            banco.ServidoresCheck(Arr,"Channel_Arena_Execute") #Armazenamento
+    if compareAdms_withRoles(ctx.guild,ctx.author.roles): #Verifica se o user possui permissão
+        if channel_Exist(ctx.guild, canal): #Verifica se o canal existe
+            Obj = banco.read_ServidoresById(ctx.guild.id)
+            Obj["Channel_Arena_Execute"] = canal
+            banco.ServidoresCheck(Obj,"Channel_Arena_Execute") #Armazenamento
             await ctx.send("Execução da arena setada para o canal "+canal, delete_after=10)
         else:
             await ctx.send("Esse canal não existe", delete_after=10)
@@ -241,5 +300,23 @@ async def set_arena_execute(ctx , canal):
         await ctx.send("Você não tem acesso a esse comando", delete_after=10)
 
 #------------Arena Commands Fim-----------------
+
+#-----------Funcoes do Server Inicio-----------
+
+def compareAdms_withRoles(guild,roles): #Verifica se os cargos tem permissão de ADM
+    Obj = banco.read_ServidoresById(guild.id)
+    adms = list(Obj["Roles_Adms"])
+    roles_name = [x.mention for x in roles]
+    retorno = False
+    for x in roles_name:
+        if x in adms:
+            retorno = True
+    return retorno
+
+def channel_Exist(guild, canal): #Verifica se o canal existe
+    channel_mentions = [x.mention for x in guild.channels]
+    return canal in channel_mentions
+
+#-----------Funcoes do Server Fim-----------
 
 client.run(TOKENs.get_token()) #Token do bot
