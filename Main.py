@@ -1,4 +1,6 @@
 #Meus arquivos .py
+from asyncio.events import Handle
+from discord.ext.commands.errors import CommandNotFound
 from Armazenamento import TOKENs
 from Armazenamento import EmbedsEpicHealper
 from Armazenamento import CRUD
@@ -61,23 +63,41 @@ async def on_guild_join(guild):
 
 #----------Bot Status Fim------------
 
-@client.command()
-async def ativar_modulo(ctx, extension):
-    if compareAdms_withRoles(ctx.guild,ctx.author.roles):
-        client.load_extension(f'Scripts.{extension}')
-    else:
-        ctx.send("Você não tem acesso a esse comando", delete_after=10)
+#-----------Funcoes do Server Inicio-----------
+
+async def checkRoles(ctx): #Verifica se os cargos tem permissão de ADM
+    guild = ctx.guild
+    roles = ctx.author.roles
+    Obj = banco.read_ServidoresById(guild.id)
+    adms = Obj["Roles_Adms"]
+    roles_name = [x.mention for x in roles]
+    retorno = False
+    for x in roles_name:
+        if x in adms:
+            retorno = True
+    if not retorno:
+        await ctx.send("Você não possui permissão pra usar esse comando")
+    return retorno
+
+#-----------Funcoes do Server Fim-----------
+
+#-----------Modulos Inicio-------------
 
 @client.command()
+@commands.check(checkRoles)
+async def ativar_modulo(ctx, extension):
+    client.load_extension(f'Scripts.{extension}')
+
+@client.command()
+@commands.check(checkRoles)
 async def desativar_modulo(ctx, extension):
-    if compareAdms_withRoles(ctx.guild,ctx.author.roles):
-        client.unload_extension(f'Scripts.{extension}')
-    else:
-        ctx.send("Você não tem acesso a esse comando", delete_after=10)
+    client.unload_extension(f'Scripts.{extension}')
 
 for filename in os.listdir('./Scripts'):
     if filename.endswith('.py'):
         client.load_extension(f'Scripts.{filename[:-3]}') #Load cortando o .py do arquivo
+
+#-----------Modulos Fim-------------
 
 #-------------Comandos Help Inicio-----------
 
@@ -95,12 +115,10 @@ class MyHelp(commands.HelpCommand): #Overwrite help
 client.help_command = MyHelp() #Quando digitar <prefix> help vai chamar a funcao
 
 @client.command(aliases = ["hadm"])
+@commands.check(checkRoles)
 async def helpadm(ctx):
-    if compareAdms_withRoles(ctx.guild, ctx.author.roles): #Verifica se o user possui permissão
-        HelpAdmEmbed = EmbedsObj.get_HelpAdmCommand()
-        await ctx.send(embed=HelpAdmEmbed)
-    else:
-        await ctx.send("Você não tem acesso a esse comando", delete_after=10)
+    HelpAdmEmbed = EmbedsObj.get_HelpAdmCommand()
+    await ctx.send(embed=HelpAdmEmbed)
 
 #-------------Comandos Help Fim-----------
 
@@ -108,33 +126,49 @@ async def helpadm(ctx):
 
 @client.command()
 async def ping(ctx): #Comando para testar a latencia
-    await ctx.send("Pong")
+    await ctx.send(f'Pong, {round(client.latency * 1000)}ms')
 
 @client.command()
+@commands.is_owner()
 async def set_adm(ctx, role): #Adiciona um cargo como adm
     guild = ctx.guild
-    if(ctx.author.id == guild.owner.id):
-        role = role.split(",")
-        role_mentions = [x.mention for x in ctx.guild.roles] 
-        if set(role).intersection(role_mentions): #Verifica se o cargo existe
-            Obj = banco.read_ServidoresById(guild.id)
-            retorno = None
-            if len(role) > 1:
-                retorno = "Os seguintes cargos foram adicionados como adms:"
-                for x in role:
-                    retorno += " \u200b"+x
-                Obj["Roles_Adms"] = role
-            else:
-                retorno = "O seguinte cargo foi adicionado como adms: "+role[0]
-                Obj["Roles_Adms"] = role[0]
-            banco.ServidoresCheck(Obj,"Roles_Adms")
-            await ctx.send(retorno)
+    role = role.split(",")
+    role_mentions = [x.mention for x in ctx.guild.roles] 
+    if set(role).intersection(role_mentions): #Verifica se o cargo existe
+        Obj = banco.read_ServidoresById(guild.id)
+        retorno = None
+        if len(role) > 1:
+            retorno = "Os seguintes cargos foram adicionados como adms:"
+            for x in role:
+                retorno += " \u200b"+x
+            Obj["Roles_Adms"] = role
         else:
-            await ctx.send("Esse cargo não existe", delete_after=10)
+            retorno = "O seguinte cargo foi adicionado como adms: "+role[0]
+            Obj["Roles_Adms"] = role[0]
+        banco.ServidoresCheck(Obj,"Roles_Adms")
+        await ctx.send(retorno)
     else:
-        await ctx.send("Apenas o dono do server tem acesso a essa permissão", delete_after=10)
+        await ctx.send("Esse cargo não existe", delete_after=10)
 
 #------------Comandos Importantes Fim-----------
+
+#-------------Tratamento de exceção Inicio-------------------
+
+@client.event
+async def on_command_error(ctx, error): #Tratamento de exceções
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("Por favor passe todos os argumentos necessários")
+    elif isinstance(error, commands.CommandNotFound):
+        await ctx.send("Comando não encontrado, digite help help para ver os comandos ativos")
+    elif isinstance(error, commands.NotOwner):
+        await ctx.send("Apenas o dono do server pode executar esse comando")
+    elif isinstance(error, commands.CheckFailure):
+        pass
+    else:
+        await ctx.send("Erro encontrado, reporte a algum adm urgente:erro \""+error.args[0]+"\"")
+        print(error)
+        print("--------------------------------")
+#-------------Tratamento de exceção Fim-------------------
 
 #-----------Comando de roles Inicio--------------
 
@@ -208,23 +242,5 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
         await member.remove_roles(role)
 
 #------------Comando de roles Fim----------------
-
-#-----------Funcoes do Server Inicio-----------
-
-def compareAdms_withRoles(guild,roles): #Verifica se os cargos tem permissão de ADM
-    Obj = banco.read_ServidoresById(guild.id)
-    adms = list(Obj["Roles_Adms"])
-    roles_name = [x.mention for x in roles]
-    retorno = False
-    for x in roles_name:
-        if x in adms:
-            retorno = True
-    return retorno
-
-def channel_Exist(guild, canal): #Verifica se o canal existe
-    channel_mentions = [x.mention for x in guild.channels]
-    return canal in channel_mentions
-
-#-----------Funcoes do Server Fim-----------
 
 client.run(TOKENs.get_token()) #Token do bot
