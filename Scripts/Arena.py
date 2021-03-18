@@ -110,6 +110,21 @@ class Arena(commands.Cog):
         else:
             await ctx.send("Você não tem acesso a esse comando", delete_after=10)
 
+    @commands.Cog.listener() #Tratamento de exceção
+    async def cog_command_error(ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Por favor passe todos os argumentos necessários")
+        elif isinstance(error, commands.CommandNotFound):
+            await ctx.send("Comando não encontrado, digite help help para ver os comandos ativos")
+        elif isinstance(error, commands.NotOwner):
+            await ctx.send("Apenas o dono do server pode executar esse comando")
+        elif isinstance(error, commands.CheckFailure):
+            pass
+        else:
+            await ctx.send("Erro encontrado, reporte a algum adm urgente:erro \""+error.args[0]+"\"")
+            print(error)
+            print("--------------------------------")
+
 #------------Arena Class Fim-----------------
 
 def setup(client): #Ativa o Cog
