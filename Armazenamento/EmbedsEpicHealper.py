@@ -1,5 +1,5 @@
 #Meus arquivos .py
-from Scripts import TOKENs
+from Armazenamento import TOKENs
 
 #Bibliotecas python
 import discord

@@ -1,5 +1,5 @@
 #Meus arquivos .py
-from Scripts import TOKENs
+from Armazenamento import TOKENs
 
 #Bibliotecas python
 from pymongo import MongoClient
@@ -12,6 +12,7 @@ class Crud:
         self.banco = DB.Epic_Healper_Tester
         self.Servidores = self.banco.Servidores
         print("Conexão com o MongoDB realizada")
+        print("------------------------------")
 
     #--------Colection Servidores Inicio--------
 

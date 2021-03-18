@@ -1,11 +1,12 @@
 #Meus arquivos .py
-from Scripts import TOKENs
-from Scripts import EmbedsEpicHealper
-from Scripts import CRUD
+from Armazenamento import TOKENs
+from Armazenamento import EmbedsEpicHealper
+from Armazenamento import CRUD
 
 #Bibliotecas python
 import discord
 import random
+import os
 from discord import embeds
 from discord.ext import commands
 from discord.ext.commands import bot
@@ -16,15 +17,11 @@ client = commands.Bot(intents = discord.Intents.all(), command_prefix=TOKENs.get
 EmbedsObj = None
 banco = None
 
-ArenaList = None #Variavel da arena
-
-#Arr = [("Server_id",ctx.guild.id),("Channel_Arena_Commands", "None"),("Channel_Arena_Execute", canal),("Channel_Miniboss", "None"),("Channel_Not_Allower", "None")] #Dict in array form
-
 #----------Bot Status Inicio------------
 
 @client.event
 async def on_ready():
-    print("BOT ONLINE - Digite help h para ajuda") 
+    print("BOT ONLINE") 
     print(client.user.name)
     print(client.user.id)
     print("----------------------")
@@ -41,7 +38,7 @@ async def on_disconnect():
 
 @client.event
 async def on_resumed():
-    print("BOT ONLINE - Digite help h para ajuda") 
+    print("BOT ONLINE - Bot foi reconectado") 
     print(client.user.name)
     print(client.user.id)
     print("----------------------")
@@ -63,6 +60,24 @@ async def on_guild_join(guild):
     banco.ServidoresCheck(Arr,"Server_id")
 
 #----------Bot Status Fim------------
+
+@client.command()
+async def ativar_modulo(ctx, extension):
+    if compareAdms_withRoles(ctx.guild,ctx.author.roles):
+        client.load_extension(f'Scripts.{extension}')
+    else:
+        ctx.send("Você não tem acesso a esse comando", delete_after=10)
+
+@client.command()
+async def desativar_modulo(ctx, extension):
+    if compareAdms_withRoles(ctx.guild,ctx.author.roles):
+        client.unload_extension(f'Scripts.{extension}')
+    else:
+        ctx.send("Você não tem acesso a esse comando", delete_after=10)
+
+for filename in os.listdir('./Scripts'):
+    if filename.endswith('.py'):
+        client.load_extension(f'Scripts.{filename[:-3]}') #Load cortando o .py do arquivo
 
 #-------------Comandos Help Inicio-----------
 
@@ -193,113 +208,6 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
         await member.remove_roles(role)
 
 #------------Comando de roles Fim----------------
-
-
-#--------------Arena Commands Inicio-------------------
-
-EmbedAnterior = None
-
-@client.event
-async def on_message(message):
-    #Variaveis importantes
-    global ArenaList
-    global EmbedAnterior
-    guild = message.guild
-    member = guild.get_member(message.author.id)
-
-    channel = banco.read_ServidoresById(guild.id)
-    if channel["Channel_Arena_Commands"] == message.channel.mention: #Verificar se os comandos estão habilitados nesse chat
-        if message.content.lower().startswith("a join"): #Entrar na lista
-            if ArenaList != None and len(ArenaList) < 10: #Verifica se ela está vazia ou cheia
-                ArenaList.append(member)
-                embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
-                await message.channel.delete_messages([EmbedAnterior])
-                EmbedAnterior = await message.channel.send(embed=embed_A_List, delete_after=20)
-                if len(ArenaList) == 10:
-                    await message.channel.send("Arena enviada para"+channel["Channel_Arena_Execute"], delete_after=20)
-                    Arena = EmbedsObj.get_ArenaExecute(ArenaList)
-                    await enviarArena(guild).send(embed=Arena)
-            else:
-                ArenaList = [member]
-                embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
-                EmbedAnterior =  await message.channel.send(embed=embed_A_List)
-            await message.delete()
-
-        elif message.content.lower().startswith("a leave"): #Sair da lista
-            if ArenaList == None:
-                await message.channel.send("Arena Vazia, para criar uma digite \"a join\"", delete_after=10)
-            elif member in ArenaList:
-                ArenaList.remove(member)
-                embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
-                await message.channel.delete_messages([EmbedAnterior])
-                EmbedAnterior = await message.channel.send(embed=embed_A_List)
-                if len(ArenaList) <= 0:
-                        ArenaList = None
-                await message.channel.send("Você saiu da arena", delete_after=10)
-            else:
-                await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
-
-        elif message.content.lower().startswith("a reset"): #Resetar a lista
-            if compareAdms_withRoles(guild,member.roles): #Verifica se o user possui permissão
-                if ArenaList == None: #Verifica se está vazia
-                    await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10)
-                else:
-                    ArenaList = None
-                    await message.channel.delete_messages([EmbedAnterior])
-                    await message.channel.send("Arena Resetada", delete_after=10)
-            else:
-                await message.channel.send("Você não tem acesso a esse comando", delete_after=10)
-            await message.delete()
-
-        elif message.content.lower().startswith("a list"): #Verificar a lista
-            if compareAdms_withRoles(guild,member.roles): #Verifica se o user possui permissão
-                if ArenaList == None: #Verifica se a lista está vazia
-                    await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10) #comando para verificar ArenaList
-                else:
-                    embed_A_List = EmbedsObj.get_ArenaCommand(ArenaList)
-                    await message.channel.send(embed=embed_A_List) 
-            else:
-                await message.channel.send("Você não tem acesso a esse comando", delete_after=10)  
-            await message.delete()
-    await client.process_commands(message)
-
-def enviarArena(guild): #Funcao para enviar a arena para outro chat
-    obj = banco.read_ServidoresById(guild.id) #Pegar do bd o canal para executar a arena
-    retorno = None
-
-    for x in guild.channels:
-        if obj["Channel_Arena_Execute"] == x.mention:
-            retorno = x
-
-    return retorno
-
-@client.command()
-async def set_arena_commands(ctx, canal):
-    if compareAdms_withRoles(ctx.guild,ctx.author.roles): #Verifica se o user possui permissão
-        if channel_Exist(ctx.guild, canal): #Verifica se o canal existe
-            Obj = banco.read_ServidoresById(ctx.guild.id)
-            Obj["Channel_Arena_Commands"] = canal
-            banco.ServidoresCheck(Obj,"Channel_Arena_Commands") #Armazenamento
-            await ctx.send("Comandos da arena setada para o canal "+canal, delete_after=10)
-        else:
-            await ctx.send("Esse canal não existe", delete_after=10)
-    else:
-        await ctx.send("Você não tem acesso a esse comando", delete_after=10)  
-
-@client.command()
-async def set_arena_execute(ctx , canal):
-    if compareAdms_withRoles(ctx.guild,ctx.author.roles): #Verifica se o user possui permissão
-        if channel_Exist(ctx.guild, canal): #Verifica se o canal existe
-            Obj = banco.read_ServidoresById(ctx.guild.id)
-            Obj["Channel_Arena_Execute"] = canal
-            banco.ServidoresCheck(Obj,"Channel_Arena_Execute") #Armazenamento
-            await ctx.send("Execução da arena setada para o canal "+canal, delete_after=10)
-        else:
-            await ctx.send("Esse canal não existe", delete_after=10)
-    else:
-        await ctx.send("Você não tem acesso a esse comando", delete_after=10)
-
-#------------Arena Commands Fim-----------------
 
 #-----------Funcoes do Server Inicio-----------
 
