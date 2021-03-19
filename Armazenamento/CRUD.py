@@ -57,15 +57,4 @@ class Crud:
             self.create_Servidores(Server)
 
     #----------Colection Servidores Fim----------
-
-    def teste(self):
-        Servidores = self.banco.Servidores
-        Server = {
-            "Server_id": "711375776351649875",
-            "Channel_Arena" : "819730770875645952",
-            "Channel_Miniboss" : "819730770875645952",
-            "Channel_Not_Allower" : "All_Another" 
-        }
-        server_id = Servidores.insert_one(Server).inserted_id
-        print(server_id)
     

@@ -1,6 +1,4 @@
 #Meus arquivos .py
-from asyncio.events import Handle
-from discord.ext.commands.errors import CommandNotFound
 from Armazenamento import TOKENs
 from Armazenamento import EmbedsEpicHealper
 from Armazenamento import CRUD
@@ -9,10 +7,12 @@ from Armazenamento import CRUD
 import discord
 import random
 import os
+from asyncio.events import Handle
 from discord import embeds
 from discord.ext import commands
 from discord.ext.commands import bot
 from pymongo import MongoClient
+from discord.ext.commands.errors import CommandNotFound
 
 client = commands.Bot(intents = discord.Intents.all(), command_prefix=TOKENs.get_prefix())
 
@@ -168,6 +168,7 @@ async def on_command_error(ctx, error): #Tratamento de exceções
         await ctx.send("Erro encontrado, reporte a algum adm urgente:erro \""+error.args[0]+"\"")
         print(error)
         print("--------------------------------")
+        
 #-------------Tratamento de exceção Fim-------------------
 
 #-----------Comando de roles Inicio--------------
@@ -191,27 +192,28 @@ async def on_raw_reaction_add(payload): #Reacao para adicionar os cargos
     member = payload.member
     HorseEmoji = client.get_emoji(770751818158047318)
 
-    if payload.emoji.name == "🌲" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Epic Tree')
-        await member.add_roles(role)
-    elif payload.emoji.name == "🐟" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Megalodon')
-        await member.add_roles(role)
-    elif payload.emoji.name == "💰" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Coin Rain')
-        await member.add_roles(role)
-    elif payload.emoji.name == "⚔️" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Arena')
-        await member.add_roles(role)
-    elif payload.emoji.name == "🐉" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Miniboss')
-        await member.add_roles(role)
-    elif payload.emoji.name == HorseEmoji and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Breedar')
-        await member.add_roles(role)
-    elif payload.emoji.name == "🆕" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Updates')
-        await member.add_roles(role)
+    if payload.user_id != 819262080200736840:
+        if payload.emoji.name == "🌲":
+            role = discord.utils.get(guild.roles, name='Epic Tree')
+            await member.add_roles(role)
+        elif payload.emoji.name == "🐟":
+            role = discord.utils.get(guild.roles, name='Megalodon')
+            await member.add_roles(role)
+        elif payload.emoji.name == "💰":
+            role = discord.utils.get(guild.roles, name='Coin Rain')
+            await member.add_roles(role)
+        elif payload.emoji.name == "⚔️":
+            role = discord.utils.get(guild.roles, name='Arena')
+            await member.add_roles(role)
+        elif payload.emoji.name == "🐉":
+            role = discord.utils.get(guild.roles, name='Miniboss')
+            await member.add_roles(role)
+        elif payload.emoji.name == HorseEmoji:
+            role = discord.utils.get(guild.roles, name='Breedar')
+            await member.add_roles(role)
+        elif payload.emoji.name == "🆕":
+            role = discord.utils.get(guild.roles, name='Updates')
+            await member.add_roles(role)
 
 @client.event
 async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
@@ -219,27 +221,28 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
     member = guild.get_member(payload.user_id)
     HorseEmoji = client.get_emoji(770751818158047318)
 
-    if payload.emoji.name == "🌲" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Epic Tree')
-        await member.remove_roles(role)
-    elif payload.emoji.name == "🐟" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Megalodon')
-        await member.remove_roles(role)
-    elif payload.emoji.name == "💰" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Coin Rain')
-        await member.remove_roles(role)
-    elif payload.emoji.name == "⚔️" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Arena')
-        await member.remove_roles(role)
-    elif payload.emoji.name == "🐉" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Miniboss')
-        await member.remove_roles(role)
-    elif payload.emoji.name == HorseEmoji and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Breedar')
-        await member.remove_roles(role)
-    elif payload.emoji.name == "🆕" and payload.user_id != 819262080200736840:
-        role = discord.utils.get(guild.roles, name='Updates')
-        await member.remove_roles(role)
+    if payload.user_id != 819262080200736840:
+        if payload.emoji.name == "🌲":
+            role = discord.utils.get(guild.roles, name='Epic Tree')
+            await member.remove_roles(role)
+        elif payload.emoji.name == "🐟":
+            role = discord.utils.get(guild.roles, name='Megalodon')
+            await member.remove_roles(role)
+        elif payload.emoji.name == "💰":
+            role = discord.utils.get(guild.roles, name='Coin Rain')
+            await member.remove_roles(role)
+        elif payload.emoji.name == "⚔️":
+            role = discord.utils.get(guild.roles, name='Arena')
+            await member.remove_roles(role)
+        elif payload.emoji.name == "🐉":
+            role = discord.utils.get(guild.roles, name='Miniboss')
+            await member.remove_roles(role)
+        elif payload.emoji.name == HorseEmoji:
+            role = discord.utils.get(guild.roles, name='Breedar')
+            await member.remove_roles(role)
+        elif payload.emoji.name == "🆕":
+            role = discord.utils.get(guild.roles, name='Updates')
+            await member.remove_roles(role)
 
 #------------Comando de roles Fim----------------
 
