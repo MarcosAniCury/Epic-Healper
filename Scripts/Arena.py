@@ -1,10 +1,12 @@
 #Meus arquivos .py
+from discord import channel
 from Main import checkRoles
 from Armazenamento import CRUD
 from Armazenamento import EmbedsEpicHealper
 
 #Bibliotecas python
 import discord
+import asyncio
 from discord.ext import commands
 
 class Arena(commands.Cog):
@@ -38,14 +40,21 @@ class Arena(commands.Cog):
 
             if message.content.lower().startswith("a join"): #Entrar na lista
                 if self.ArenaList != None and len(self.ArenaList) < 10: #Verifica se ela está vazia ou cheia
-                    self.ArenaList.append(member)
-                    embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
-                    await message.channel.delete_messages([self.EmbedAnterior])
-                    self.EmbedAnterior = await message.channel.send(embed=embed_A_List, delete_after=20)
-                    if len(self.ArenaList) == 10:
-                        await message.channel.send("Arena enviada para"+channel["Channel_Arena_Execute"], delete_after=20)
-                        Arena = self.EmbedsObj.get_ArenaExecute(self.ArenaList)
-                        await enviarArena(guild,self.banco).send(embed=Arena)
+                    if not member in self.ArenaList:
+                        self.ArenaList.append(member)
+                        embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
+                        await message.channel.delete_messages([self.EmbedAnterior])
+                        self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
+                        if len(self.ArenaList) == 10:
+                            await message.channel.send("Arena enviada para"+channel["Channel_Arena_Execute"], delete_after=20)
+                            Arena = self.EmbedsObj.get_ArenaExecute(self.ArenaList)
+                            await enviarArena(guild,self.banco,self.ArenaList,Arena)
+                            await asyncio.sleep(5*60) #Espera 5 min antes de remover os cargos
+                            role = discord.utils.get(guild.roles, name='Arena Fight')
+                            for x in self.ArenaList:
+                                await x.remove_roles(role)
+                    else:
+                        await message.channel.send("Você já está na arena", delete_after=10)
                 else:
                     self.ArenaList = [member]
                     embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
@@ -94,7 +103,7 @@ class Arena(commands.Cog):
     @commands.command()
     @commands.check(checkRoles)
     async def set_arena_commands(self, ctx, canal):
-        if channel_Exist(ctx, canal): #Verifica se o canal existe
+        if await channel_Exist(ctx, canal): #Verifica se o canal existe
             Obj = self.banco.read_ServidoresById(ctx.guild.id)
             Obj["Channel_Arena_Commands"] = canal
             self.banco.ServidoresCheck(Obj,"Channel_Arena_Commands") #Armazenamento
@@ -105,7 +114,7 @@ class Arena(commands.Cog):
     @commands.command()
     @commands.check(checkRoles)
     async def set_arena_execute(self, ctx , canal):
-        if channel_Exist(ctx, canal): #Verifica se o canal existe
+        if await channel_Exist(ctx, canal): #Verifica se o canal existe
             Obj = self.banco.read_ServidoresById(ctx.guild.id)
             Obj["Channel_Arena_Execute"] = canal
             self.banco.ServidoresCheck(Obj,"Channel_Arena_Execute") #Armazenamento
@@ -141,14 +150,19 @@ async def channel_Exist(ctx, canal): #Verifica se o canal existe
     return retorno
 
 
-def enviarArena(guild,banco): #Funcao para enviar a arena para outro chat
+async def enviarArena(guild,banco,ArenaList,ArenaEmbed): #Funcao para enviar a arena para outro chat
         obj = banco.read_ServidoresById(guild.id) #Pegar do bd o canal para executar a arena
-        retorno = None
+        cahnnel = None
+
+        role = discord.utils.get(guild.roles, name='Arena Fight')
+        for x in ArenaList:
+            await x.add_roles(role)
 
         for x in guild.channels:
             if obj["Channel_Arena_Execute"] == x.mention:
-                retorno = x
+                channel = x
+                break
 
-        return retorno
+        await channel.send(embed=ArenaEmbed)
 
  #-----------Funcoes do Cog Fim-----------
