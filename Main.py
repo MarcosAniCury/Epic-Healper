@@ -129,6 +129,10 @@ async def ping(ctx): #Comando para testar a latencia
     await ctx.send(f'Pong, {round(client.latency * 1000)}ms')
 
 @client.command()
+async def credits(ctx): #Comando de agredecimento aos tester
+    await ctx.send(embed=EmbedsObj.get_Credits())
+
+@client.command()
 @commands.is_owner()
 async def set_adm(ctx, role): #Adiciona um cargo como adm
     guild = ctx.guild
