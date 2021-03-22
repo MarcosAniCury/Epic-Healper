@@ -9,6 +9,9 @@ import discord
 import asyncio
 from discord.ext import commands
 
+global ListArena #Conjuto de ArenaList
+listArena = []
+
 class Arena(commands.Cog):
 
     def __init__(self,client):
@@ -46,19 +49,17 @@ class Arena(commands.Cog):
                         await message.channel.delete_messages([self.EmbedAnterior])
                         self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
                         if len(self.ArenaList) == 10:
-                            await message.channel.send("Arena enviada para"+channel["Channel_Arena_Execute"], delete_after=20)
+                            await message.channel.send("Arena enviada para "+channel["Channel_Arena_Execute"], delete_after=20)
                             Arena = self.EmbedsObj.get_ArenaExecute(self.ArenaList)
                             await enviarArena(guild,self.banco,self.ArenaList,Arena)
-                            await asyncio.sleep(5*60) #Espera 5 min antes de remover os cargos
-                            role = discord.utils.get(guild.roles, name='Arena Fight')
-                            for x in self.ArenaList:
-                                await x.remove_roles(role)
+                            await removerCargo(guild,self.ArenaList)
+                            self.ArenaList = None
                     else:
                         await message.channel.send("Você já está na arena", delete_after=10)
                 else:
                     self.ArenaList = [member]
                     embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
-                    self.EmbedAnterior =  await message.channel.send(embed=embed_A_List)
+                    self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
                 await message.delete()
 
             elif message.content.lower().startswith("a leave"): #Sair da lista
@@ -152,7 +153,7 @@ async def channel_Exist(ctx, canal): #Verifica se o canal existe
 
 async def enviarArena(guild,banco,ArenaList,ArenaEmbed): #Funcao para enviar a arena para outro chat
         obj = banco.read_ServidoresById(guild.id) #Pegar do bd o canal para executar a arena
-        cahnnel = None
+        channel = None
 
         role = discord.utils.get(guild.roles, name='Arena Fight')
         for x in ArenaList:
@@ -164,5 +165,14 @@ async def enviarArena(guild,banco,ArenaList,ArenaEmbed): #Funcao para enviar a a
                 break
 
         await channel.send(embed=ArenaEmbed)
+
+async def removerCargo(guild,ArenaList):
+    listArena.append(ArenaList)
+    await asyncio.sleep(5*60)
+    Arena = listArena[0]
+    listArena.remove(Arena) 
+    role = discord.utils.get(guild.roles, name='Arena Fight')
+    for x in Arena:
+        await x.remove_roles(role)
 
  #-----------Funcoes do Cog Fim-----------

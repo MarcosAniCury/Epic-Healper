@@ -155,11 +155,11 @@ class EpicHealperEmbeds:
         descrisao += "\n\n**Os membros estão nessa ordem caso não saiba seu id:**\n"
         for x in ArenaList:
             descrisao += str(x)+", "
-            ArenaExecute = discord.Embed(
-                title="⚔️🍪 Arena 🍪⚔️",
-                description=descrisao,
-                color=0xFFBF00
-            )
+        ArenaExecute = discord.Embed(
+            title="⚔️🍪 Arena 🍪⚔️",
+            description=descrisao,
+            color=0xFFBF00
+        )
         ArenaExecute.set_footer(text="Epic Healper - bot em desenvolvimento", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
         return ArenaExecute

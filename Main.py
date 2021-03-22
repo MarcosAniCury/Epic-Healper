@@ -5,8 +5,8 @@ from Armazenamento import CRUD
 
 #Bibliotecas python
 import discord
-import random
 import os
+import threading
 from asyncio.events import Handle
 from discord import embeds
 from discord.ext import commands
