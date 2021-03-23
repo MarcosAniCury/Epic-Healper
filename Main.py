@@ -185,7 +185,7 @@ async def roles(ctx): #Comando para cargos
     await botmsg.add_reaction("🌲")
     await botmsg.add_reaction("🐟") 
     await botmsg.add_reaction("💰")
-    await botmsg.add_reaction("⚔️")
+    await botmsg.add_reaction(":cookie:")
     await botmsg.add_reaction("🐉")
     await botmsg.add_reaction(HorseEmoji)
     await botmsg.add_reaction("🆕")
@@ -207,7 +207,7 @@ async def on_raw_reaction_add(payload): #Reacao para adicionar os cargos
         elif payload.emoji.name == "💰":
             role = discord.utils.get(guild.roles, name='Coin Rain')
             await member.add_roles(role)
-        elif payload.emoji.name == "⚔️":
+        elif payload.emoji.name == ":cookie:":
             role = discord.utils.get(guild.roles, name='Arena')
             await member.add_roles(role)
         elif payload.emoji.name == "🐉":
@@ -219,8 +219,8 @@ async def on_raw_reaction_add(payload): #Reacao para adicionar os cargos
         elif payload.emoji.name == "🆕":
             role = discord.utils.get(guild.roles, name='Updates')
             await member.add_roles(role)
-        elif payload.emoji.name == ":crossed_swords:":
-            role = discord.utils.get(guild.roles, name='Updates')
+        elif payload.emoji.name == "⚔️":
+            role = discord.utils.get(guild.roles, name='Duel')
             await member.add_roles(role)
 
 @client.event
@@ -239,7 +239,7 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
         elif payload.emoji.name == "💰":
             role = discord.utils.get(guild.roles, name='Coin Rain')
             await member.remove_roles(role)
-        elif payload.emoji.name == "⚔️":
+        elif payload.emoji.name == ":cookie:":
             role = discord.utils.get(guild.roles, name='Arena')
             await member.remove_roles(role)
         elif payload.emoji.name == "🐉":
@@ -250,6 +250,9 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
             await member.remove_roles(role)
         elif payload.emoji.name == "🆕":
             role = discord.utils.get(guild.roles, name='Updates')
+            await member.remove_roles(role)
+        elif payload.emoji.name == "⚔️":
+            role = discord.utils.get(guild.roles, name='Duel')
             await member.remove_roles(role)
 
 #------------Comando de roles Fim----------------
