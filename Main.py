@@ -182,7 +182,6 @@ async def on_command_error(ctx, error): #Tratamento de exceções
 
 @client.command()
 async def roles(ctx): #Comando para cargos
-    HorseEmoji = client.get_emoji(770751818158047318) #emoji :HorseT8:
     botmsg = await ctx.send(embed=EmbedsObj.get_RolesCommand())
 
     await botmsg.add_reaction("🌲")
@@ -190,7 +189,6 @@ async def roles(ctx): #Comando para cargos
     await botmsg.add_reaction("💰")
     await botmsg.add_reaction("⚔️")
     await botmsg.add_reaction("🐉")
-    #await botmsg.add_reaction(HorseEmoji)
     await botmsg.add_reaction("🆕")
     await botmsg.add_reaction("🗡️")
 
@@ -216,9 +214,6 @@ async def on_raw_reaction_add(payload): #Reacao para adicionar os cargos
         elif payload.emoji.name == "🐉":
             role = discord.utils.get(guild.roles, name='Miniboss')
             await member.add_roles(role)
-        #elif payload.emoji.name == HorseEmoji:
-            #role = discord.utils.get(guild.roles, name='Breedar')
-            #await member.add_roles(role)
         elif payload.emoji.name == "🆕":
             role = discord.utils.get(guild.roles, name='Updates')
             await member.add_roles(role)

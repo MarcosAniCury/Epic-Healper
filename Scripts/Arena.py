@@ -39,7 +39,7 @@ class Arena(commands.Cog):
         member = guild.get_member(message.author.id)
 
         channel = self.banco.read_ServidoresById(guild.id)
-        if channel["Channel_Arena_Commands"] == message.channel.mention and message.author.id != 768835234015739904: #Verificar se os comandos estão habilitados nesse chat
+        if channel["Channel_Arena_Commands"] == message.channel.mention and message.author.id != 819262080200736840: #Verificar se os comandos estão habilitados nesse chat
 
             await message.delete()
             if message.content.lower().startswith("a join"): #Entrar na lista
