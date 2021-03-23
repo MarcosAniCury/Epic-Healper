@@ -190,7 +190,7 @@ async def roles(ctx): #Comando para cargos
     await botmsg.add_reaction("💰")
     await botmsg.add_reaction("⚔️")
     await botmsg.add_reaction("🐉")
-    await botmsg.add_reaction(HorseEmoji)
+    #await botmsg.add_reaction(HorseEmoji)
     await botmsg.add_reaction("🆕")
     await botmsg.add_reaction("🗡️")
 
@@ -216,9 +216,9 @@ async def on_raw_reaction_add(payload): #Reacao para adicionar os cargos
         elif payload.emoji.name == "🐉":
             role = discord.utils.get(guild.roles, name='Miniboss')
             await member.add_roles(role)
-        elif payload.emoji.name == HorseEmoji:
-            role = discord.utils.get(guild.roles, name='Breedar')
-            await member.add_roles(role)
+        #elif payload.emoji.name == HorseEmoji:
+            #role = discord.utils.get(guild.roles, name='Breedar')
+            #await member.add_roles(role)
         elif payload.emoji.name == "🆕":
             role = discord.utils.get(guild.roles, name='Updates')
             await member.add_roles(role)
@@ -247,9 +247,6 @@ async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
             await member.remove_roles(role)
         elif payload.emoji.name == "🐉":
             role = discord.utils.get(guild.roles, name='Miniboss')
-            await member.remove_roles(role)
-        elif payload.emoji.name == HorseEmoji:
-            role = discord.utils.get(guild.roles, name='Breedar')
             await member.remove_roles(role)
         elif payload.emoji.name == "🆕":
             role = discord.utils.get(guild.roles, name='Updates')
