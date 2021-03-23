@@ -165,7 +165,7 @@ async def on_command_error(ctx, error): #Tratamento de exceções
     elif isinstance(error, commands.CommandNotFound):
         await ctx.send("Comando não encontrado, digite help help para ver os comandos ativos")
         channel = banco.read_ServidoresById(ctx.guild.id)
-        if channel["Channel_Arena_Commands"] == ctx.message.channel.mention: #Verificar se os comandos estão habilitados nesse chat
+        if channel["Channel_Arena_Commands"] == ctx.message.channel.mention and ctx.author != 819262080200736840: #Verificar se os comandos estão habilitados nesse chat
             ctx.message.delete()
     elif isinstance(error, commands.NotOwner):
         await ctx.send("Apenas o dono do server pode executar esse comando")
