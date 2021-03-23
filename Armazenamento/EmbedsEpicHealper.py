@@ -81,7 +81,7 @@ class EpicHealperEmbeds:
             color = 0xFE2EF7, #Roxo
         )
 
-        RolesCommand.description = ":evergreen_tree:-Epic Tree\n:fish:-Megalodon\n:moneybag:-Coin Rain\n🍪-Arena\n:dragon:-Miniboss\n{}-Horse Partner\n:new:-Updates\n:crossed_swords:-Duel".format(self.HorseEmoji)
+        RolesCommand.description = ":evergreen_tree:-Epic Tree\n:fish:-Megalodon\n:moneybag:-Coin Rain\n⚔️-Arena\n:dragon:-Miniboss\n{}-Horse Partner\n:new:-Updates\n🗡️-Duel".format(self.HorseEmoji)
         
         return RolesCommand
     
