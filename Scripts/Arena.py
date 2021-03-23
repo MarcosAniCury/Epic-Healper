@@ -75,6 +75,7 @@ class Arena(commands.Cog):
                     await message.channel.send("Você saiu da arena", delete_after=10)
                 else:
                     await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
+                await message.delete()
 
             elif message.content.lower().startswith("a reset"): #Resetar a lista
                 if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
