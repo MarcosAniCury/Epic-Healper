@@ -39,8 +39,9 @@ class Arena(commands.Cog):
         member = guild.get_member(message.author.id)
 
         channel = self.banco.read_ServidoresById(guild.id)
-        if channel["Channel_Arena_Commands"] == message.channel.mention: #Verificar se os comandos estão habilitados nesse chat
+        if channel["Channel_Arena_Commands"] == message.channel.mention and message.author.id != 819262080200736840: #Verificar se os comandos estão habilitados nesse chat
 
+            await message.delete()
             if message.content.lower().startswith("a join"): #Entrar na lista
                 if self.ArenaList != None and len(self.ArenaList) < 10: #Verifica se ela está vazia ou cheia
                     if not member in self.ArenaList:
@@ -97,7 +98,6 @@ class Arena(commands.Cog):
                         await message.channel.send(embed=embed_A_List) 
                 else:
                     await message.channel.send("Você não possui permissão pra usar esse comando")
-            await message.delete()
 
     #-------------------ADM Commands--------------------------
 
