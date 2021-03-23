@@ -59,6 +59,8 @@ class Arena(commands.Cog):
                 else:
                     self.ArenaList = [member]
                     embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
+                    if self.EmbedAnterior != None:
+                        await message.channel.delete_messages([self.EmbedAnterior])
                     self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
                 await message.delete()
 
@@ -75,6 +77,7 @@ class Arena(commands.Cog):
                     await message.channel.send("Você saiu da arena", delete_after=10)
                 else:
                     await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
+                await message.delete()
 
             elif message.content.lower().startswith("a reset"): #Resetar a lista
                 if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
