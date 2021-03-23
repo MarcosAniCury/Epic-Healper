@@ -95,7 +95,7 @@ class Arena(commands.Cog):
                         await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10) #comando para verificar self.ArenaList
                     else:
                         embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
-                        await message.channel.send(embed=embed_A_List) 
+                        await message.channel.send(embed=embed_A_List, delete_after=60) 
                 else:
                     await message.channel.send("Você não possui permissão pra usar esse comando")
 
