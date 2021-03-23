@@ -39,8 +39,9 @@ class Arena(commands.Cog):
         member = guild.get_member(message.author.id)
 
         channel = self.banco.read_ServidoresById(guild.id)
-        if channel["Channel_Arena_Commands"] == message.channel.mention: #Verificar se os comandos estão habilitados nesse chat
+        if channel["Channel_Arena_Commands"] == message.channel.mention and message.author.id != 819262080200736840: #Verificar se os comandos estão habilitados nesse chat
 
+            await message.delete()
             if message.content.lower().startswith("a join"): #Entrar na lista
                 if self.ArenaList != None and len(self.ArenaList) < 10: #Verifica se ela está vazia ou cheia
                     if not member in self.ArenaList:
@@ -62,7 +63,6 @@ class Arena(commands.Cog):
                     if self.EmbedAnterior != None:
                         await message.channel.delete_messages([self.EmbedAnterior])
                     self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
-                await message.delete()
 
             elif message.content.lower().startswith("a leave"): #Sair da lista
                 if self.ArenaList == None:
@@ -77,7 +77,6 @@ class Arena(commands.Cog):
                     await message.channel.send("Você saiu da arena", delete_after=10)
                 else:
                     await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
-                await message.delete()
 
             elif message.content.lower().startswith("a reset"): #Resetar a lista
                 if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
@@ -89,7 +88,6 @@ class Arena(commands.Cog):
                         await message.channel.send("Arena Resetada", delete_after=10)
                 else:
                     await message.channel.send("Você não possui permissão pra usar esse comando")
-                await message.delete()
 
             elif message.content.lower().startswith("a list"): #Verificar a lista
                 if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
@@ -100,7 +98,6 @@ class Arena(commands.Cog):
                         await message.channel.send(embed=embed_A_List) 
                 else:
                     await message.channel.send("Você não possui permissão pra usar esse comando")
-                await message.delete()
 
     #-------------------ADM Commands--------------------------
 

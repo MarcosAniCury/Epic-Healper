@@ -161,15 +161,18 @@ async def set_adm(ctx, role): #Adiciona um cargo como adm
 @client.event
 async def on_command_error(ctx, error): #Tratamento de exceções
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Por favor passe todos os argumentos necessários")
+        await ctx.send("Por favor passe todos os argumentos necessários", delete_after = 20)
     elif isinstance(error, commands.CommandNotFound):
-        await ctx.send("Comando não encontrado, digite help help para ver os comandos ativos")
+        await ctx.send("Comando não encontrado, digite help help para ver os comandos ativos", delete_after = 20)
+        channel = banco.read_ServidoresById(ctx.guild.id)
+        if channel["Channel_Arena_Commands"] == ctx.message.channel.mention and ctx.author.id != 819262080200736840: #Verificar se os comandos estão habilitados nesse chat
+            ctx.message.delete()
     elif isinstance(error, commands.NotOwner):
-        await ctx.send("Apenas o dono do server pode executar esse comando")
+        await ctx.send("Apenas o dono do server pode executar esse comando", delete_after = 20)
     elif isinstance(error, commands.CheckFailure):
         pass
     else:
-        await ctx.send("Erro encontrado, reporte a algum adm urgente:erro \""+error.args[0]+"\"")
+        await ctx.send("Erro encontrado, reporte a algum adm urgente:erro \""+error.args[0]+"\"", delete_after = 60)
         print(error)
         print("--------------------------------")
         
