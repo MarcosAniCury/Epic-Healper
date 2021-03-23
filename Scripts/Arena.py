@@ -59,7 +59,8 @@ class Arena(commands.Cog):
                 else:
                     self.ArenaList = [member]
                     embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
-                    await message.channel.delete_messages([self.EmbedAnterior])
+                    if self.EmbedAnterior != None:
+                        await message.channel.delete_messages([self.EmbedAnterior])
                     self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
                 await message.delete()
 
