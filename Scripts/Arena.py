@@ -1,6 +1,6 @@
 #Meus arquivos .py
 from discord import channel
-from Main import checkRoles
+from Main import EmbedsObj, checkRoles
 from Armazenamento import CRUD
 from Armazenamento import EmbedsEpicHealper
 
@@ -39,66 +39,84 @@ class Arena(commands.Cog):
         member = guild.get_member(message.author.id)
 
         channel = self.banco.read_ServidoresById(guild.id)
-        if channel["Channel_Arena_Commands"] == message.channel.mention and message.author.id != 819262080200736840: #Verificar se os comandos estão habilitados nesse chat
+        if message.author.id != self.client.user.id:
+            if channel["Channel_Arena_Commands"] == message.channel.mention: #Verificar se os comandos estão habilitados nesse chat
 
-            await message.delete()
-            if message.content.lower().startswith("a join"): #Entrar na lista
-                if self.ArenaList != None and len(self.ArenaList) < 10: #Verifica se ela está vazia ou cheia
-                    if not member in self.ArenaList:
-                        self.ArenaList.append(member)
+                await message.delete()
+                if message.content.lower().startswith("a join"): #Entrar na lista
+                    if self.ArenaList != None and len(self.ArenaList) < 10: #Verifica se ela está vazia ou cheia
+                        if not member in self.ArenaList:
+                            self.ArenaList.append(member)
+                            embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
+                            await message.channel.delete_messages([self.EmbedAnterior])
+                            self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
+                            if len(self.ArenaList) == 10:
+                                await message.channel.send("Arena enviada para "+channel["Channel_Arena_Execute"], delete_after=20)
+                                await enviarArena(guild,self.banco,self.ArenaList,self.EmbedsObj)
+                                await message.channel.delete_messages([self.EmbedAnterior])
+                                self.ArenaList = None
+                        else:
+                            await message.channel.send("Você já está na arena", delete_after=10)
+                    else:
+                        self.ArenaList = [member]
+                        embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
+                        if self.EmbedAnterior != None:
+                            await message.channel.delete_messages([self.EmbedAnterior])
+                        self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
+
+                elif message.content.lower().startswith("a leave"): #Sair da lista
+                    if self.ArenaList == None:
+                        await message.channel.send("Arena Vazia, para criar uma digite \"a join\"", delete_after=10)
+                    elif member in self.ArenaList:
+                        self.ArenaList.remove(member)
                         embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
                         await message.channel.delete_messages([self.EmbedAnterior])
                         self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
-                        if len(self.ArenaList) == 10:
-                            await message.channel.send("Arena enviada para "+channel["Channel_Arena_Execute"], delete_after=20)
-                            Arena = self.EmbedsObj.get_ArenaExecute(self.ArenaList)
-                            await enviarArena(guild,self.banco,self.ArenaList,Arena)
-                            await removerCargo(guild,self.ArenaList)
+                        if len(self.ArenaList) <= 0:
+                                self.ArenaList = None
+                        await message.channel.send("Você saiu da arena", delete_after=10)
+                    else:
+                        await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
+
+                elif message.content.lower().startswith("a list"): #Verificar a lista
+                    if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
+                        if self.ArenaList == None: #Verifica se a lista está vazia
+                            await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10) #comando para verificar self.ArenaList
+                        else:
+                            embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
+                            await message.channel.send(embed=embed_A_List, delete_after=60) 
+                    else:
+                        await message.channel.send("Você não possui permissão pra usar esse comando")
+
+                elif message.content.lower().startswith("a reset"): #Resetar a lista
+                    if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
+                        if self.ArenaList == None: #Verifica se está vazia
+                            await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10)
+                        else:
+                            self.ArenaList = None
+                            await message.channel.delete_messages([self.EmbedAnterior])
+                            self.EmbedAnterior = None
+                            await message.channel.send("Arena Resetada", delete_after=10)
+                    else:
+                        await message.channel.send("Você não possui permissão pra usar esse comando")
+
+                elif message.content.lower().startswith("a send"): #Enviar a lista
+                    if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
+                        if self.ArenaList == None: #Verifica se a lista está vazia
+                            await message.channel.send("Arena Vazia", delete_after=10) #comando para verificar self.ArenaList
+                        elif len(self.ArenaList) < 2:
+                            await message.channel.send("Arena com menos de 2 players não é permitido enviar", delete_after=10) #comando para verificar se tem menos de 2 players
+                        else:
+                            await enviarArena(guild, self.banco, self.ArenaList, self.EmbedsObj) 
+                            await message.channel.delete_messages([self.EmbedAnterior])
                             self.ArenaList = None
                     else:
-                        await message.channel.send("Você já está na arena", delete_after=10)
-                else:
-                    self.ArenaList = [member]
-                    embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
-                    if self.EmbedAnterior != None:
-                        await message.channel.delete_messages([self.EmbedAnterior])
-                    self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
-
-            elif message.content.lower().startswith("a leave"): #Sair da lista
-                if self.ArenaList == None:
-                    await message.channel.send("Arena Vazia, para criar uma digite \"a join\"", delete_after=10)
-                elif member in self.ArenaList:
-                    self.ArenaList.remove(member)
-                    embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
-                    await message.channel.delete_messages([self.EmbedAnterior])
-                    self.EmbedAnterior = await message.channel.send(embed=embed_A_List)
-                    if len(self.ArenaList) <= 0:
-                            self.ArenaList = None
-                    await message.channel.send("Você saiu da arena", delete_after=10)
-                else:
-                    await message.channel.send("Você não entrou na arena digite \"a join\" para entrar", delete_after=10)
-
-            elif message.content.lower().startswith("a reset"): #Resetar a lista
-                if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
-                    if self.ArenaList == None: #Verifica se está vazia
-                        await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10)
-                    else:
-                        self.ArenaList = None
-                        await message.channel.delete_messages([self.EmbedAnterior])
-                        self.EmbedAnterior = None
-                        await message.channel.send("Arena Resetada", delete_after=10)
-                else:
-                    await message.channel.send("Você não possui permissão pra usar esse comando")
-
-            elif message.content.lower().startswith("a list"): #Verificar a lista
-                if checkRolesArena(message,self.banco): #Verifica se o user possui permissão
-                    if self.ArenaList == None: #Verifica se a lista está vazia
-                        await message.channel.send("Arena Vazia, digite \"a join\" para entrar na arena", delete_after=10) #comando para verificar self.ArenaList
-                    else:
-                        embed_A_List = self.EmbedsObj.get_ArenaCommand(self.ArenaList)
-                        await message.channel.send(embed=embed_A_List, delete_after=60) 
-                else:
-                    await message.channel.send("Você não possui permissão pra usar esse comando")
+                        await message.channel.send("Você não possui permissão pra usar esse comando")
+            else:
+                if message.content.lower().startswith("a "):
+                    ArenaCommands = self.banco.read_ServidoresById(guild.id)
+                    ArenaCommands = ArenaCommands["Channel_Arena_Commands"]
+                    await message.channel.send("Comando da arena só podem ser feitos no "+ArenaCommands)
 
     #-------------------ADM Commands--------------------------
 
@@ -152,7 +170,7 @@ async def channel_Exist(ctx, canal): #Verifica se o canal existe
     return retorno
 
 
-async def enviarArena(guild,banco,ArenaList,ArenaEmbed): #Funcao para enviar a arena para outro chat
+async def enviarArena(guild,banco,ArenaList,EmbedsObj): #Funcao para enviar a arena para outro chat
         obj = banco.read_ServidoresById(guild.id) #Pegar do bd o canal para executar a arena
         channel = None
 
@@ -165,11 +183,15 @@ async def enviarArena(guild,banco,ArenaList,ArenaEmbed): #Funcao para enviar a a
                 channel = x
                 break
 
-        await channel.send(embed=ArenaEmbed)
+        Arena = EmbedsObj.get_ArenaExecute(ArenaList)
+
+        await channel.send(embed=Arena)
+
+        await removerCargo(guild,ArenaList)
 
 async def removerCargo(guild,ArenaList):
     listArena.append(ArenaList)
-    await asyncio.sleep(5*60)
+    await asyncio.sleep(20)
     Arena = listArena[0]
     listArena.remove(Arena) 
     role = discord.utils.get(guild.roles, name='Arena Fight')
