@@ -35,7 +35,7 @@ async def on_ready():
     await client.change_presence(activity=discord.Game("\"help h\" alias \"h h\"")) #Alterar status do bot
 
 @client.event
-async def on_disconnect():
+async def on_disconnect(erro):
     print("Bot desconectado verifique sua conexão")
 
 @client.event
@@ -72,9 +72,14 @@ async def checkRoles(ctx): #Verifica se os cargos tem permissão de ADM
     adms = Obj["Roles_Adms"]
     roles_name = [x.mention for x in roles]
     retorno = False
-    for x in roles_name:
-        if x in adms:
-            retorno = True
+    permissão = ctx.channel.permissions_for(ctx.author)
+    if permissão.administrator:
+        retorno = True
+    else:
+        for x in roles_name:
+            if x in adms:
+                retorno = True
+                
     if not retorno:
         await ctx.send("Você não possui permissão pra usar esse comando")
     return retorno
@@ -134,25 +139,57 @@ async def credits(ctx): #Comando de agredecimento aos tester
 
 @client.command()
 @commands.is_owner()
-async def set_adm(ctx, role): #Adiciona um cargo como adm
+async def add_adm(ctx, role): #Adiciona um cargo como adm
     guild = ctx.guild
-    role = role.split(",")
-    role_mentions = [x.mention for x in ctx.guild.roles] 
-    if set(role).intersection(role_mentions): #Verifica se o cargo existe
+    role_mentions = [x.mention for x in guild.roles] 
+    if role in role_mentions: #Verifica se o cargo existe
         Obj = banco.read_ServidoresById(guild.id)
-        retorno = None
-        if len(role) > 1:
-            retorno = "Os seguintes cargos foram adicionados como adms:"
-            for x in role:
-                retorno += " \u200b"+x
-            Obj["Roles_Adms"] = role
+        if Obj["Roles_Adms"] != None:
+            lista = Obj["Roles_Adms"]
+            lista.append(role)
+            Obj["Roles_Adms"] = lista
         else:
-            retorno = "O seguinte cargo foi adicionado como adms: "+role[0]
-            Obj["Roles_Adms"] = role[0]
+            Obj["Roles_Adms"] = [role]
         banco.ServidoresCheck(Obj,"Roles_Adms")
-        await ctx.send(retorno)
+        retorno = "O seguinte cargo foi adicionado como adms: "+role
+        await ctx.send(retorno, delete_after=20)
     else:
         await ctx.send("Esse cargo não existe", delete_after=10)
+    await ctx.message.delete()
+
+@client.command()
+@commands.is_owner()
+async def remove_adm(ctx, role): #Adiciona um cargo como adm
+    guild = ctx.guild
+    role_mentions = [x.mention for x in guild.roles] 
+    if role in role_mentions: #Verifica se o cargo existe
+        Obj = banco.read_ServidoresById(guild.id)
+        if role in Obj["Roles_Adms"]:
+            lista = Obj["Roles_Adms"]
+            lista.remove(role)
+            Obj["Roles_Adms"] = lista
+            banco.ServidoresCheck(Obj,"Roles_Adms")
+            retorno = "O seguinte cargo foi removido como adms: "+role
+            await ctx.send(retorno, delete_after=20)
+        else:
+            await ctx.send("Esse cargo não é um administrador", delete_after=10)
+    else:
+        await ctx.send("Esse cargo não existe", delete_after=10)
+    await ctx.message.delete()
+
+@client.command()
+@commands.is_owner()
+async def list_adm(ctx): #Adiciona um cargo como adm
+    guild = ctx.guild
+    Obj = banco.read_ServidoresById(guild.id)
+    if Obj["Roles_Adms"] != None:
+        retorno = "Os cargos setados como adms são:"
+        for x in Obj["Roles_Adms"]:
+            retorno+=x+" \u200b"
+        await ctx.send(retorno, delete_after=20)
+    else:
+        await ctx.send("Você não registrou nenhum cargo como adm, Digite \""+TOKENs.get_prefix()[0]+" add_adm\" para adicionar")
+    await ctx.message.delete()
 
 #------------Comandos Importantes Fim-----------
 
@@ -183,16 +220,17 @@ async def on_command_error(ctx, error): #Tratamento de exceções
 @client.command()
 async def roles(ctx): #Comando para cargos
     HorseEmoji = client.get_emoji(770751818158047318) #emoji :HorseT8:
-    botmsg = await ctx.send(embed=EmbedsObj.get_RolesCommand())
+    msgEvent = await ctx.send(embed=EmbedsObj.get_RolesEventCommand())
+    msgHorse = await ctx.send(embed=EmbedsObj.get_RolesHorseCommand())
 
-    await botmsg.add_reaction("🌲")
-    await botmsg.add_reaction("🐟") 
-    await botmsg.add_reaction("💰")
-    await botmsg.add_reaction("⚔️")
-    await botmsg.add_reaction("🐉")
+    await msgEvent.add_reaction("🌲")
+    await msgEvent.add_reaction("🐟") 
+    await msgEvent.add_reaction("💰")
+    await msgEvent.add_reaction("⚔️")
+    await msgEvent.add_reaction("🐉")
     #await botmsg.add_reaction(HorseEmoji)
-    await botmsg.add_reaction("🆕")
-    await botmsg.add_reaction("🗡️")
+    await msgEvent.add_reaction("🆕")
+    await msgEvent.add_reaction("🗡️")
 
 @client.event
 async def on_raw_reaction_add(payload): #Reacao para adicionar os cargos

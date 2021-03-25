@@ -12,7 +12,6 @@ class EpicHealperEmbeds:
     #Construtores
     def __init__(self, client):
         self.client = client
-        self.HorseEmoji = self.client.get_emoji(770751818158047318) #emoji :HorseT8:
         self.prefix = TOKENs.get_prefix()
         if type(self.prefix) is list:
             self.prefix = self.prefix[0]
@@ -29,7 +28,7 @@ class EpicHealperEmbeds:
             name="📄Server Comandos📄", 
             value = "`"+self.prefix+"roles` - para adquirir um cargo\n"
             "`"+self.prefix+"ping` - para testar a latência\n"
-            "`"+self.prefix+"helpadm || hadm` - comando help para adms **Apenas ADMs**\n\u200b"
+            "`"+self.prefix+"helpadm || hadm` - comando help para adms **Apenas ADMs**\n"
             "`"+self.prefix+"credits` - créditos e agradecimentos\n\u200b",
             inline = False
         )
@@ -56,7 +55,9 @@ class EpicHealperEmbeds:
 
         HelpAdmCommand.add_field(
             name="📄Server Comandos📄", 
-            value = "`"+self.prefix+"set_adm <cargo ou cargos>` - Setar cargos como adms, para adicionar mais de um coloque juntos e separados por uma virgula\n\u200b",
+            value = "`"+self.prefix+"add_adm <cargo ou cargos>` - adicionar cargos como adms\n"
+            "`"+self.prefix+"remove_adm <cargo ou cargos>` - remover cargos como adms\n"
+            "`"+self.prefix+"list_adm <cargo ou cargos>` - listar todos os cargos setados como adms\n\u200b",
             inline = False
         )
 
@@ -64,6 +65,7 @@ class EpicHealperEmbeds:
             name="🍪Arena Comandos🍪",
             value = "`a reset` - Reinicia a arena\n"
             "`a list` - Mostra a lista da arena\n"
+            "`a send` - Forçar envio da lista da arena\n"
             "`"+self.prefix+"set_arena_commands <menção do canal>` - Setar canal em que comandos da arena serão executados\n"
             "`"+self.prefix+"set_arena_execute <menção do canal>` - Setar canal em a arena será executada (Por padrão é o mesmo que a Arena_Commands)\n"
             "\nBot em construção, mais comandos serão adicionados no futuro"
@@ -74,14 +76,14 @@ class EpicHealperEmbeds:
 
         return HelpAdmCommand
 
-    def get_RolesCommand(self): #Embed Command roles
+    def get_RolesEventCommand(self): #Embed Command roles
 
         RolesCommand = discord.Embed(
             title = "Reaja para ganhar os cargos",
             color = 0xFE2EF7, #Roxo
         )
 
-        RolesCommand.description = ":evergreen_tree:-Epic Tree\n:fish:-Megalodon\n:moneybag:-Coin Rain\n⚔️-Arena\n:dragon:-Miniboss\n{}-Horse Partner\n:new:-Updates\n🗡️-Duel".format(self.HorseEmoji)
+        RolesCommand.description = ":evergreen_tree:-Epic Tree\n:fish:-Megalodon\n:moneybag:-Coin Rain\n⚔️-Arena\n:dragon:-Miniboss\n:new:-Updates\n🗡️-Duel"  #"{}".format(self.HorseEmoji)
         
         return RolesCommand
     
@@ -149,7 +151,7 @@ class EpicHealperEmbeds:
 
     def get_ArenaExecute(self, ArenaList): #Embed Execute arena
         
-        descrisao = "**Copie e cole as menções retirando a sua:**\nrpg miniboss"
+        descrisao = "**Copie e cole as menções retirando a sua:**\nrpg arena"
         for x in ArenaList:
             descrisao += " `"+x.mention+"`\u200b"
         descrisao += "\n\n**Os membros estão nessa ordem caso não saiba seu id:**\n"
