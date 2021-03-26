@@ -107,9 +107,10 @@ class Arena(commands.Cog):
                         elif len(self.ArenaList) < 2:
                             await message.channel.send("Arena com menos de 2 players não é permitido enviar", delete_after=10) #comando para verificar se tem menos de 2 players
                         else:
-                            await enviarArena(guild, self.banco, self.ArenaList, self.EmbedsObj) 
-                            await message.channel.delete_messages([self.EmbedAnterior])
+                            ArenaListTemp = self.ArenaList.copy()
                             self.ArenaList = None
+                            await enviarArena(guild, self.banco, ArenaListTemp, self.EmbedsObj) 
+                            await message.channel.delete_messages([self.EmbedAnterior])
                     else:
                         await message.channel.send("Você não possui permissão pra usar esse comando")
             else:
