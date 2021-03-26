@@ -191,7 +191,7 @@ async def enviarArena(guild,banco,ArenaList,EmbedsObj): #Funcao para enviar a ar
 
 async def removerCargo(guild,ArenaList):
     listArena.append(ArenaList)
-    await asyncio.sleep(20)
+    await asyncio.sleep(5*60)
     Arena = listArena[0]
     listArena.remove(Arena) 
     role = discord.utils.get(guild.roles, name='Arena Fight')
