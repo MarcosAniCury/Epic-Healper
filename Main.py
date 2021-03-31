@@ -190,7 +190,6 @@ async def list_adm(ctx): #Adiciona um cargo como adm
     else:
         await ctx.send("Você não registrou nenhum cargo como adm, Digite \""+TOKENs.get_prefix()[0]+" add_adm\" para adicionar")
     await ctx.message.delete()
-
 #------------Comandos Importantes Fim-----------
 
 #-------------Tratamento de exceção Inicio-------------------
@@ -214,85 +213,5 @@ async def on_command_error(ctx, error): #Tratamento de exceções
         print("--------------------------------")
         
 #-------------Tratamento de exceção Fim-------------------
-
-#-----------Comando de roles Inicio--------------
-
-@client.command()
-async def roles(ctx): #Comando para cargos
-    HorseEmoji = client.get_emoji(770751818158047318) #emoji :HorseT8:
-    msgEvent = await ctx.send(embed=EmbedsObj.get_RolesEventCommand())
-    msgHorse = await ctx.send(embed=EmbedsObj.get_RolesHorseCommand())
-
-    await msgEvent.add_reaction("🌲")
-    await msgEvent.add_reaction("🐟") 
-    await msgEvent.add_reaction("💰")
-    await msgEvent.add_reaction("⚔️")
-    await msgEvent.add_reaction("🐉")
-    #await botmsg.add_reaction(HorseEmoji)
-    await msgEvent.add_reaction("🆕")
-    await msgEvent.add_reaction("🗡️")
-
-@client.event
-async def on_raw_reaction_add(payload): #Reacao para adicionar os cargos
-    guild = client.get_guild(payload.guild_id)                  
-    member = payload.member
-    HorseEmoji = client.get_emoji(770751818158047318)
-
-    if payload.user_id != 819262080200736840:
-        if payload.emoji.name == "🌲":
-            role = discord.utils.get(guild.roles, name='Epic Tree')
-            await member.add_roles(role)
-        elif payload.emoji.name == "🐟":
-            role = discord.utils.get(guild.roles, name='Megalodon')
-            await member.add_roles(role)
-        elif payload.emoji.name == "💰":
-            role = discord.utils.get(guild.roles, name='Coin Rain')
-            await member.add_roles(role)
-        elif payload.emoji.name == "⚔️":
-            role = discord.utils.get(guild.roles, name='Arena')
-            await member.add_roles(role)
-        elif payload.emoji.name == "🐉":
-            role = discord.utils.get(guild.roles, name='Miniboss')
-            await member.add_roles(role)
-        #elif payload.emoji.name == HorseEmoji:
-            #role = discord.utils.get(guild.roles, name='Breedar')
-            #await member.add_roles(role)
-        elif payload.emoji.name == "🆕":
-            role = discord.utils.get(guild.roles, name='Updates')
-            await member.add_roles(role)
-        elif payload.emoji.name == "🗡️":
-            role = discord.utils.get(guild.roles, name='Duel')
-            await member.add_roles(role)
-
-@client.event
-async def on_raw_reaction_remove(payload): #Reacao para retirar os cargos
-    guild = client.get_guild(payload.guild_id)
-    member = guild.get_member(payload.user_id)
-    HorseEmoji = client.get_emoji(770751818158047318)
-
-    if payload.user_id != 819262080200736840:
-        if payload.emoji.name == "🌲":
-            role = discord.utils.get(guild.roles, name='Epic Tree')
-            await member.remove_roles(role)
-        elif payload.emoji.name == "🐟":
-            role = discord.utils.get(guild.roles, name='Megalodon')
-            await member.remove_roles(role)
-        elif payload.emoji.name == "💰":
-            role = discord.utils.get(guild.roles, name='Coin Rain')
-            await member.remove_roles(role)
-        elif payload.emoji.name == "⚔️":
-            role = discord.utils.get(guild.roles, name='Arena')
-            await member.remove_roles(role)
-        elif payload.emoji.name == "🐉":
-            role = discord.utils.get(guild.roles, name='Miniboss')
-            await member.remove_roles(role)
-        elif payload.emoji.name == "🆕":
-            role = discord.utils.get(guild.roles, name='Updates')
-            await member.remove_roles(role)
-        elif payload.emoji.name == "🗡️":
-            role = discord.utils.get(guild.roles, name='Duel')
-            await member.remove_roles(role)
-
-#------------Comando de roles Fim----------------
 
 client.run(TOKENs.get_token()) #Token do bot

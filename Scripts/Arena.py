@@ -117,7 +117,7 @@ class Arena(commands.Cog):
                 if message.content.lower().startswith("a "):
                     ArenaCommands = self.banco.read_ServidoresById(guild.id)
                     ArenaCommands = ArenaCommands["Channel_Arena_Commands"]
-                    await message.channel.send("Comando da arena só podem ser feitos no "+ArenaCommands)
+                    await message.channel.send("Comando da arena só podem ser feitos no "+ArenaCommands, delete_after=10)
 
     #-------------------ADM Commands--------------------------
 

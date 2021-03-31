@@ -26,8 +26,7 @@ class EpicHealperEmbeds:
 
         HelpCommand.add_field(
             name="📄Server Comandos📄", 
-            value = "`"+self.prefix+"roles` - para adquirir um cargo\n"
-            "`"+self.prefix+"ping` - para testar a latência\n"
+            value ="`"+self.prefix+"ping` - para testar a latência\n"
             "`"+self.prefix+"helpadm || hadm` - comando help para adms **Apenas ADMs**\n"
             "`"+self.prefix+"credits` - créditos e agradecimentos\n\u200b",
             inline = False
@@ -75,17 +74,6 @@ class EpicHealperEmbeds:
         HelpAdmCommand.set_author(name="EPIC HEALPER", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
         return HelpAdmCommand
-
-    def get_RolesEventCommand(self): #Embed Command roles
-
-        RolesCommand = discord.Embed(
-            title = "Reaja para ganhar os cargos",
-            color = 0xFE2EF7, #Roxo
-        )
-
-        RolesCommand.description = ":evergreen_tree:-Epic Tree\n:fish:-Megalodon\n:moneybag:-Coin Rain\n⚔️-Arena\n:dragon:-Miniboss\n:new:-Updates\n🗡️-Duel"  #"{}".format(self.HorseEmoji)
-        
-        return RolesCommand
     
     def get_Credits(self): #Embed Command Credits
 
