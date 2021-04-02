@@ -32,6 +32,32 @@ class Arena(commands.Cog):
         print("Modulo desconectado")
         print("---------------------")
 
+    #-------------------ADM Commands Inicio--------------------------
+
+    @commands.command()
+    @commands.check(checkRoles)
+    async def set_arena_commands(self, ctx, canal):
+        if await channel_Exist(ctx, canal): #Verifica se o canal existe
+            Obj = self.banco.read_ServidoresById(ctx.guild.id)
+            Obj["Channel_Arena_Commands"] = canal
+            self.banco.ServidoresCheck(Obj,"Channel_Arena_Commands") #Armazenamento
+            await ctx.send("Comandos da arena setada para o canal "+canal, delete_after=10)
+        else:
+            raise commands.CheckFailure
+
+    @commands.command()
+    @commands.check(checkRoles)
+    async def set_arena_execute(self, ctx , canal):
+        if await channel_Exist(ctx, canal): #Verifica se o canal existe
+            Obj = self.banco.read_ServidoresById(ctx.guild.id)
+            Obj["Channel_Arena_Execute"] = canal
+            self.banco.ServidoresCheck(Obj,"Channel_Arena_Execute") #Armazenamento
+            await ctx.send("Execução da arena setada para o canal "+canal, delete_after=10)
+        else:
+            raise commands.CheckFailure
+
+    #-------------------ADM Commands Fim--------------------------
+
     @commands.Cog.listener()
     async def on_message(self,message):
         #Variaveis importantes
@@ -111,6 +137,7 @@ class Arena(commands.Cog):
                             self.ArenaList = None
                             await enviarArena(guild, self.banco, ArenaListTemp, self.EmbedsObj) 
                             await message.channel.delete_messages([self.EmbedAnterior])
+                            self.EmbedAnterior = None
                     else:
                         await message.channel.send("Você não possui permissão pra usar esse comando")
             else:
@@ -118,30 +145,6 @@ class Arena(commands.Cog):
                     ArenaCommands = self.banco.read_ServidoresById(guild.id)
                     ArenaCommands = ArenaCommands["Channel_Arena_Commands"]
                     await message.channel.send("Comando da arena só podem ser feitos no "+ArenaCommands, delete_after=10)
-
-    #-------------------ADM Commands--------------------------
-
-    @commands.command()
-    @commands.check(checkRoles)
-    async def set_arena_commands(self, ctx, canal):
-        if await channel_Exist(ctx, canal): #Verifica se o canal existe
-            Obj = self.banco.read_ServidoresById(ctx.guild.id)
-            Obj["Channel_Arena_Commands"] = canal
-            self.banco.ServidoresCheck(Obj,"Channel_Arena_Commands") #Armazenamento
-            await ctx.send("Comandos da arena setada para o canal "+canal, delete_after=10)
-        else:
-            raise commands.CheckFailure
-
-    @commands.command()
-    @commands.check(checkRoles)
-    async def set_arena_execute(self, ctx , canal):
-        if await channel_Exist(ctx, canal): #Verifica se o canal existe
-            Obj = self.banco.read_ServidoresById(ctx.guild.id)
-            Obj["Channel_Arena_Execute"] = canal
-            self.banco.ServidoresCheck(Obj,"Channel_Arena_Execute") #Armazenamento
-            await ctx.send("Execução da arena setada para o canal "+canal, delete_after=10)
-        else:
-            raise commands.CheckFailure
 
 #------------Arena Class Fim-----------------
 
@@ -175,7 +178,7 @@ async def enviarArena(guild,banco,ArenaList,EmbedsObj): #Funcao para enviar a ar
         obj = banco.read_ServidoresById(guild.id) #Pegar do bd o canal para executar a arena
         channel = None
 
-        role = discord.utils.get(guild.roles, name='Arena Fight')
+        role = discord.utils.get(guild.roles, name='⚔️Arena Fight')
         for x in ArenaList:
             await x.add_roles(role)
 
@@ -195,7 +198,7 @@ async def removerCargo(guild,ArenaList):
     await asyncio.sleep(5*60)
     Arena = listArena[0]
     listArena.remove(Arena) 
-    role = discord.utils.get(guild.roles, name='Arena Fight')
+    role = discord.utils.get(guild.roles, name='⚔️Arena Fight')
     for x in Arena:
         await x.remove_roles(role)
 

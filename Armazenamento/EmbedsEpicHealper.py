@@ -39,6 +39,13 @@ class EpicHealperEmbeds:
             "\nBot em construção, mais comandos serão adicionados no futuro"
         )
 
+        HelpCommand.add_field(
+            name="🐉Miniboss Comandos🐉",
+            value = "`mb join <lv>` - Entrar no Miniboss\n"
+            "`mb leave` - Sair do Miniboss\n"
+            "\nBot em construção, mais comandos serão adicionados no futuro"
+        )
+
         HelpCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')
         HelpCommand.set_author(name="EPIC HEALPER", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
@@ -66,7 +73,17 @@ class EpicHealperEmbeds:
             "`a list` - Mostra a lista da arena\n"
             "`a send` - Forçar envio da lista da arena\n"
             "`"+self.prefix+"set_arena_commands <menção do canal>` - Setar canal em que comandos da arena serão executados\n"
-            "`"+self.prefix+"set_arena_execute <menção do canal>` - Setar canal em a arena será executada (Por padrão é o mesmo que a Arena_Commands)\n"
+            "`"+self.prefix+"set_arena_execute <menção do canal>` - Setar canal em que a arena será executada (Por padrão é o mesmo que a Arena_Commands)\n"
+            "\nBot em construção, mais comandos serão adicionados no futuro"
+        )
+
+        HelpAdmCommand.add_field(
+            name="🐉Miniboss Comandos🐉",
+            value = "`mb reset` - Reinicia o Miniboss\n"
+            "`mb list` - Mostra a lista do Miniboss\n"
+            "`mb send` - Forçar envio da lista do Miniboss\n"
+            "`"+self.prefix+"set_miniboss_commands <menção do canal>` - Setar canal em que comandos do miniboss serão executados\n"
+            "`"+self.prefix+"set_miniboss_execute <menção do canal>` - Setar canal em que o miniboss será executada (Por padrão é o mesmo que a Arena_Commands)\n"
             "\nBot em construção, mais comandos serão adicionados no futuro"
         )
 
@@ -153,3 +170,37 @@ class EpicHealperEmbeds:
         ArenaExecute.set_footer(text="Epic Healper - bot em desenvolvimento", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
         return ArenaExecute
+
+    def get_MinibossCommand(self, MinibossList,MaiorLevel): #Embed Command Miniboss
+        
+        descrisao = "Digite \"mb join\" para se juntar ao miniboss"
+        i=1
+        for x in MinibossList:
+            descrisao += "\n"+str(i)+"-**"+str(x[0])+"** Lv:"+str(x[1])
+            i += 1
+        descrisao += "\n\n Host do Miniboss-**"+str(MaiorLevel[0])+"** Lv:"+str(MaiorLevel[1])
+        MinibossCommand = discord.Embed(
+                title="⚔️🐉 Miniboss "+str(len(MinibossList))+"/"+"10 🐉⚔️",
+                description=descrisao,
+                color=0xFF0000 #Vermelho
+            )
+        MinibossCommand.set_footer(text="Epic Healper - bot em desenvolvimento", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
+
+        return MinibossCommand
+
+    def get_MinibossExecute(self, MinibossList,MaiorLevel): #Embed Execute Miniboss
+        
+        descrisao = "**"+str(MaiorLevel[0])+" você é o HOST copie e cole as menções retirando a sua:**\nrpg miniboss"
+        for x in MinibossList:
+            descrisao += " `"+x[0].mention+"`\u200b"
+        descrisao += "\n\n**Os membros estão nessa ordem caso não saiba seu id:**\n"
+        for x in MinibossList:
+            descrisao += str(x[0])+", "
+        MinibossExecute = discord.Embed(
+            title="⚔️🐉 Miniboss 🐉⚔️",
+            description=descrisao,
+            color=0xFFBF00
+        )
+        MinibossExecute.set_footer(text="Epic Healper - bot em desenvolvimento", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
+
+        return MinibossExecute
