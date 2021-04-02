@@ -43,7 +43,8 @@ class EpicHealperEmbeds:
             name="🐉Miniboss Comandos🐉",
             value = "`mb join <lv>` - Entrar no Miniboss\n"
             "`mb leave` - Sair do Miniboss\n"
-            "\nBot em construção, mais comandos serão adicionados no futuro"
+            "\nBot em construção, mais comandos serão adicionados no futuro",
+            inline = False
         )
 
         HelpCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')
@@ -73,7 +74,7 @@ class EpicHealperEmbeds:
             "`a list` - Mostra a lista da arena\n"
             "`a send` - Forçar envio da lista da arena\n"
             "`"+self.prefix+"set_arena_commands <menção do canal>` - Setar canal em que comandos da arena serão executados\n"
-            "`"+self.prefix+"set_arena_execute <menção do canal>` - Setar canal em que a arena será executada (Por padrão é o mesmo que a Arena_Commands)\n"
+            "`"+self.prefix+"set_arena_execute <menção do canal>` - Setar canal em que a arena será executada\n"
             "\nBot em construção, mais comandos serão adicionados no futuro"
         )
 
@@ -83,8 +84,9 @@ class EpicHealperEmbeds:
             "`mb list` - Mostra a lista do Miniboss\n"
             "`mb send` - Forçar envio da lista do Miniboss\n"
             "`"+self.prefix+"set_miniboss_commands <menção do canal>` - Setar canal em que comandos do miniboss serão executados\n"
-            "`"+self.prefix+"set_miniboss_execute <menção do canal>` - Setar canal em que o miniboss será executada (Por padrão é o mesmo que a Arena_Commands)\n"
-            "\nBot em construção, mais comandos serão adicionados no futuro"
+            "`"+self.prefix+"set_miniboss_execute <menção do canal>` - Setar canal em que o miniboss será executada\n"
+            "\nBot em construção, mais comandos serão adicionados no futuro",
+            inline = False
         )
 
         HelpAdmCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')

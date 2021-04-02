@@ -41,6 +41,8 @@ class Arena(commands.Cog):
             Obj = self.banco.read_ServidoresById(ctx.guild.id)
             Obj["Channel_Arena_Commands"] = canal
             self.banco.ServidoresCheck(Obj,"Channel_Arena_Commands") #Armazenamento
+            if Obj["Channel_Arena_Execute"] == "None":
+                await ctx.send("use o comando set_arena_execute para setar o local de execução da arena") 
             await ctx.send("Comandos da arena setada para o canal "+canal, delete_after=10)
         else:
             raise commands.CheckFailure

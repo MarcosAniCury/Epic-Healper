@@ -31,6 +31,7 @@ class Crud:
         if Obj != None:
             self.Servidores.update_one({"Server_id" : Server["Server_id"]}, {"$set":Server})
             conseguiu = True
+
         return conseguiu
 
     def delete_Servidores(self,Server_id):

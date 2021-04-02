@@ -42,6 +42,8 @@ class Miniboss(commands.Cog):
             Obj = self.banco.read_ServidoresById(ctx.guild.id)
             Obj["Channel_Miniboss_Commands"] = canal
             self.banco.ServidoresCheck(Obj,"Channel_Miniboss_Commands") #Armazenamento
+            if Obj["Channel_Miniboss_Execute"] == "None":
+                await ctx.send("use o comando **set_miniboss_execute** para setar o local de execução do miniboss", delete_after=10) 
             await ctx.send("Comandos do Miniboss setado para o canal "+canal, delete_after=10)
         else:
             raise commands.CheckFailure
