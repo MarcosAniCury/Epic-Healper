@@ -149,5 +149,6 @@ Thumbs.db #thumbnail cache on Windows
 
 #ignore by me
 TOKENs.py
+commanddescart.py
 
 # End of https://www.toptal.com/developers/gitignore/api/python
