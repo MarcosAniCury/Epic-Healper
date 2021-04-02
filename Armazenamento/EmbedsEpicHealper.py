@@ -44,7 +44,6 @@ class EpicHealperEmbeds:
             value = "`mb join <lv>` - Entrar no Miniboss\n"
             "`mb leave` - Sair do Miniboss\n"
             "\nBot em construção, mais comandos serão adicionados no futuro",
-            inline = False
         )
 
         HelpCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')
@@ -86,7 +85,6 @@ class EpicHealperEmbeds:
             "`"+self.prefix+"set_miniboss_commands <menção do canal>` - Setar canal em que comandos do miniboss serão executados\n"
             "`"+self.prefix+"set_miniboss_execute <menção do canal>` - Setar canal em que o miniboss será executada\n"
             "\nBot em construção, mais comandos serão adicionados no futuro",
-            inline = False
         )
 
         HelpAdmCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')
