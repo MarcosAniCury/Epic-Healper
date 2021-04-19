@@ -223,7 +223,7 @@ async def enviarMiniboss(guild,banco,MinibossList,MaiorLevel,EmbedsObj): #Funcao
 
 async def removerCargo(guild,MinibossList):
     listMiniboss.append(MinibossList)
-    await asyncio.sleep(20)
+    await asyncio.sleep(5*60)
     Miniboss = listMiniboss[0]
     listMiniboss.remove(Miniboss) 
     role = discord.utils.get(guild.roles, name='🐉Miniboss Fight')
