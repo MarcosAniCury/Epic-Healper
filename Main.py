@@ -7,6 +7,7 @@ from Armazenamento import CRUD
 import discord
 import os
 import threading
+import random
 from asyncio.events import Handle
 from discord import embeds
 from discord.ext import commands
@@ -136,6 +137,13 @@ async def ping(ctx): #Comando para testar a latencia
 @client.command()
 async def credits(ctx): #Comando de agredecimento aos tester
     await ctx.send(embed=EmbedsObj.get_Credits())
+
+@client.command()
+async def d(ctx, number, loops): #Comando para rodar um dado
+    for x in range(int(loops)):
+        result = random.randint(0, int(number)+1)
+        returnFunc = "`"+str(result)+"` <- d"+number
+        await ctx.send(returnFunc)
 
 @client.command()
 @commands.is_owner()
