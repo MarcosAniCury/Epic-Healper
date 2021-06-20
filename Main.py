@@ -140,9 +140,20 @@ async def credits(ctx): #Comando de agredecimento aos tester
 
 @client.command()
 async def d(ctx, number, loops): #Comando para rodar um dado
+    randomizar = []
+    number = int(number)
+    for x in range(20):
+        randomizar.append(random.randint(0,999))
     for x in range(int(loops)):
-        result = random.randint(0, int(number)+1)
-        returnFunc = "`"+str(result)+"` <- d"+number
+        result = random.randint(1, number)
+        random.seed(random.randint(random.choice(randomizar),999))
+        returnFunc = None 
+        if result == number:
+            returnFunc = "**"+str(result)+"** <- d"+str(number)+" **CRITÍCO, `dano pra carai`**"
+        elif result == 1:
+            returnFunc = "**"+str(result)+"** <- d"+str(number)+" **FALHA CRÍTICA**, `se fudeu`"
+        else:
+            returnFunc = "`"+str(result)+"` <- d"+str(number)
         await ctx.send(returnFunc)
 
 @client.command()
