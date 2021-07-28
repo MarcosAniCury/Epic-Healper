@@ -7,7 +7,7 @@ import discord
 from discord import client
 from discord.ext.commands.help import HelpCommand
 
-class EpicHealperEmbeds:
+class Epic3cm:
     
     #Construtores
     def __init__(self, client):
@@ -20,7 +20,7 @@ class EpicHealperEmbeds:
 
         HelpCommand = discord.Embed(
             title = "Comandos",
-            description = "Bot feito para ajudar os jogadores do rpg epic\n\u200b",
+            description = "Bot feito para auxilio em diversas funcionalidades\n\u200b",
             colour = 0xBF00FF,
         )
 
@@ -43,11 +43,18 @@ class EpicHealperEmbeds:
             name="🐉Miniboss Comandos🐉",
             value = "`mb join <lv>` - Entrar no Miniboss\n"
             "`mb leave` - Sair do Miniboss\n"
+            "\nBot em construção, mais comandos serão adicionados no futuro\n\u200b",
+        )
+
+        HelpCommand.add_field(
+            name="🏹RPG de Mesa Comandos⚔️",
+            value = "`rd<numero de lados> <quantidades de vezes>` - Rodar um dado de n lados m vezes\n"
             "\nBot em construção, mais comandos serão adicionados no futuro",
+            inline = False
         )
 
         HelpCommand.set_footer(text="Develop by:Miko#9331", icon_url=f'{self.client.get_user(239498713347653633).avatar_url}')
-        HelpCommand.set_author(name="EPIC HEALPER", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
+        HelpCommand.set_author(name="Helper Utilities", icon_url=f'{self.client.get_user(819262080200736840).avatar_url}')
 
         return HelpCommand
 
@@ -63,7 +70,9 @@ class EpicHealperEmbeds:
             name="📄Server Comandos📄", 
             value = "`"+self.prefix+"add_adm <cargo ou cargos>` - adicionar cargos como adms\n"
             "`"+self.prefix+"remove_adm <cargo ou cargos>` - remover cargos como adms\n"
-            "`"+self.prefix+"list_adm <cargo ou cargos>` - listar todos os cargos setados como adms\n\u200b",
+            "`"+self.prefix+"list_adm <cargo ou cargos>` - listar todos os cargos setados como adms\n"
+            "`"+self.prefix+"ativar_modulo <modulo>` - ativar um modulo do bot\n"
+            "`"+self.prefix+"desativar_modulo <modulo>` - desativar um modulo do bot\n\u200b",
             inline = False
         )
 

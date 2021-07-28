@@ -1,12 +1,8 @@
 def get_token():
-    return "NzY4ODM1MjM0MDE1NzM5OTA0.X5GPnA.yRxLmRUVka7exIk04xJLsfY1a4g"
+    return "c94ab4c0b94013698c1a64de1040eda633658a29656009669ea7441df668887e"
 
 def get_tokenCrud():
-    return "mongodb+srv://Miko:meufusca@epichealpertest.ki7hu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    return "mongodb+srv://Miko:meufusca@3cm.jkkh6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 def get_prefix():
-    return ["t ","test "]
-
-#A mesma que o token
-def get_password():
-    return "ODE5MjYyMDgwMjAwNzM2ODQw.YEkDRQ.35aTq5H7m0U-NuM8AwLPC5d3p-k"
+    return ["3cm ","cm "]

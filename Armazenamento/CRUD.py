@@ -9,8 +9,7 @@ class Crud:
     #Construtor
     def __init__(self):
         DB = MongoClient(TOKENs.get_tokenCrud())
-        self.banco = DB.Epic_Healper_Tester
-        self.Servidores = self.banco.Servidores
+        self.banco = DB.3cm
         print("Conexão com o MongoDB realizada")
         print("------------------------------")
 
@@ -18,8 +17,9 @@ class Crud:
 
     #--------------Crud Inicio--------------
 
-    def create_Servidores(self,Server): #Criar um documento
-        self.Servidores.insert_one(Server)
+    def create(self,Colecao,item): #Criar um documento
+        colecao = self.banco.Colecao
+        colecao.insert_one(item)
         return True
 
     def read_ServidoresById(self,Server_id): #Criar um documento
@@ -56,6 +56,13 @@ class Crud:
             conseguiu = True
         else:
             self.create_Servidores(Server)
+
+    def checkPlayer(self,id):
+        Players = self.banco.Players
+        retorno = False
+        if(Players.find_one({"PlayerId":id}) != None):
+            retorno = True
+        return retorno
 
     #----------Colection Servidores Fim----------
     
