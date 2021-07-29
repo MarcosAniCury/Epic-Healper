@@ -109,7 +109,7 @@ async def ping(ctx): #Comando para testar a latencia
 @client.command()
 @client.check(checkPlayer)
 async def createPlayer(ctx): #Criar player
-    return
+    Player = {}
 
 #------------Comandos Importantes Fim-----------
 
