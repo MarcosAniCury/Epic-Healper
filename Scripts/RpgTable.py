@@ -1,14 +1,8 @@
 #Meus arquivos .py
-from discord import channel
-from Main import EmbedsObj, checkRoles
 from Armazenamento import CRUD
-from Armazenamento import EmbedsEpicHealper
 
 #Bibliotecas python
-import discord
-import asyncio
 import random
-import youtube_dl
 from discord.ext import commands
 
 class RpgTable(commands.Cog):
